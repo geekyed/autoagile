@@ -48,7 +48,7 @@ max_client_conn = 100
 [db.migrations]
 # Specifies an ordered list of schema files that describe your database.
 # Supports glob patterns relative to supabase directory: "./schemas/*.sql"
-schema_paths = []
+schema_paths = ['./migrations/*.sql']
 
 [db.seed]
 # If enabled, seeds the database after migrations during a db reset.
@@ -252,10 +252,10 @@ url = ""
 # If enabled, the nonce check will be skipped. Required for local sign in with Google auth.
 skip_nonce_check = false
 
-[auth.third_party.github]
+[auth.external.github]
 enabled=true
 client_id = "env(GITHUB_CLIENT_ID)"
-client_secret = "env(GITHUB_CLIENT_SECRET)"
+secret = "env(GITHUB_CLIENT_SECRET)"
 redirect_uri = "http://localhost:54321/auth/v1/callback"
 
 # Use Firebase Auth as a third-party provider alongside Supabase Auth.
