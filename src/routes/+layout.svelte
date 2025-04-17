@@ -16,7 +16,5 @@
 	});
 </script>
 
-<div>
-	<h1>Hello From Layout</h1>
-	{@render children()}
-</div>
+{@render children()}
+
