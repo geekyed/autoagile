@@ -1,27 +1,52 @@
 <script lang='ts'>
-	import { usersSync } from 'drizzle-orm/neon';
 	import { Button } from '../lib/components/ui/button';
 	import { Card, CardContent, CardHeader } from '../lib/components/ui/card';
 	import Input from '../lib/components/ui/input/input.svelte';
 	import { Label } from '../lib/components/ui/label';
+  import { enhance } from '$app/forms';
+	import { invalidate } from '$app/navigation';
 
   const { data } = $props()
+  const {userProfile} = data;
+
+  let name = $state('');
+  let email = $state('');
+
+  $effect(() => {
+    if (userProfile) {
+      name = userProfile.name;
+      email = userProfile.email;
+    }
+  });
+
 </script>
 
-{#if data.userProfile}
+{#if userProfile}
+<Button variant='secondary' href="/auth/logout">Logout</Button>
 <Card>
   <CardHeader>
     Manage your profile
   </CardHeader>
   <CardContent>
-    <form>
+    <form method="post" use:enhance={({formData}) => {
+      formData.set('name', name);
+      formData.set('email', email);
+      return ({result}) => {
+        if (result.type === 'success') {
+          invalidate('/')
+          alert('Profile updated successfully');
+        } else {
+          alert('Failed to update profile');
+        }
+      };
+    }}>
         <div>    
           <Label>Email</Label>
-          <Input value={data.userProfile.email}></Input>
+          <Input bind:value={email}></Input>
         </div>
         <div>    
           <Label>Name</Label>
-          <Input value={data.userProfile.name}/>
+          <Input bind:value={name}></Input>
         </div>
         <div>
           <Button type='submit'>Update</Button>
