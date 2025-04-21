@@ -22,7 +22,9 @@ export const getOrCreateUserProfile = async (locals: App.Locals) => {
   await db.insert(profileTable).values({
     id: user.id,
     email: user.email ?? "",
-    name: ''
+    name: '',
+    octopusAccountId: '',
+    octopusAPIKey: '',
   });
 
   const newProfile = db.query.profileTable.findFirst({ where: eq(profileTable.id, user.id) });

@@ -4,6 +4,7 @@ import { zfd } from "zod-form-data";
 import { db } from '../lib/db';
 import { profileTable } from '../lib/db/schema';
 import { eq } from 'drizzle-orm';
+import { getTariffCode } from '../lib/octopus';
 
 export const load = async ({locals}) => {
   const userProfile = await getOrCreateUserProfile(locals)
@@ -20,6 +21,8 @@ export const actions = {
     const schema = zfd.formData({
       name: zfd.text(),
       email: zfd.text(),
+      octopusAccountId: zfd.text(),
+      octopusAPIKey: zfd.text(),
     });
 
     const { data, error: parseError } = schema.safeParse(await request.formData());
@@ -30,6 +33,9 @@ export const actions = {
     await db.update(profileTable).set({
       name: data.name,
       email: data.email,
+      octopusAccountId: data.octopusAccountId,
+      octopusAPIKey: data.octopusAPIKey,
+      octopusTariff: !userProfile.octopusTariff ? await getTariffCode(data.octopusAccountId, data.octopusAPIKey) : userProfile.octopusTariff,
     }).where(eq(profileTable.id, userProfile.id));
 
     return { success: true };
