@@ -41,8 +41,7 @@
       formData.set('octopusAPIKey', octopusAPIKey);
       return ({result}) => {
         if (result.type === 'success') {
-          invalidate('/')
-          alert('Profile updated successfully');
+          window.location.reload();
         } else {
           alert('Failed to update profile');
         }
@@ -50,25 +49,23 @@
     }}>
         <div>    
           <Label>Email</Label>
-          <Input bind:value={email}></Input>
+          <Input bind:value={email}/>
         </div>
         <div>    
           <Label>Name</Label>
-          <Input bind:value={name}></Input>
+          <Input bind:value={name}/>
         </div>
         <div>    
           <Label>Octopus Account Id</Label>
-          <Input bind:value={octopusAccountID}></Input>
+          <Input bind:value={octopusAccountID}/>
         </div>
         <div>    
           <Label>Octopus API Key</Label>
-          <Input bind:value={octopusAPIKey}></Input>
+          <Input bind:value={octopusAPIKey} />
         </div>
         <div>
-          <p>
-            <Label>Octopus Tariff Code</Label>
-            <Input value={octopusTariff} disabled></Input>
-          </p>
+          <Label>Octopus Tariff Code</Label>
+          <Input bind:value={octopusTariff} disabled />
         </div>
         <div>
           <Button type='submit'>Update</Button>
