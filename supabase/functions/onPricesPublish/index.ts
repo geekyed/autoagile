@@ -4,17 +4,33 @@
 
 // Setup type definitions for built-in Supabase Runtime APIs
 import "jsr:@supabase/functions-js/edge-runtime.d.ts"
+import { getUniqueTariffs } from "./profile/index.ts"
 
 Deno.serve(async () => {
-  const tariffs = getUniqueTariffs()
+  console.info("Function 'onPricesPublish' invoked")
 
-  tariffs.forEach(tariffCode => {
-    const prices = await getPrices(tariffCode)
-    console.info(`Prices for ${tariffCode}:`)
-    prices.forEach(price => {
-      console.info(`  ${price.start} - ${price.end}: £${price.price}`)
-    })
-  });
+  const tariffs = await getUniqueTariffs()
+
+  // const responseData = []
+  // tariffs.forEach(tariffCode => {
+  //   const prices = await getPrices(tariffCode)
+  //   console.info(`Prices for ${tariffCode}:`)
+  //   prices.forEach(price => {
+  //     console.info(`  ${price.start} - ${price.end}: £${price.price}`)
+  //     responseData.push({
+  //       tariff: price.tariff,
+  //       price: price.price,
+  //       created: price.created,
+  //       start: price.start,
+  //       end: price.end,
+  //     })
+  //   })
+  // });
+
+  return new Response(
+    JSON.stringify({data: tariffs}),
+    { headers: { "Content-Type": "application/json" } },
+  )
 })
 
 /* To invoke locally:
