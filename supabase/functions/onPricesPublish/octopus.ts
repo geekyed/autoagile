@@ -66,6 +66,8 @@ export const getPrices = async (tariffCode: string): Promise<Price[]> => {
         end: price.end,
       })))
     }
+  } else {
+    console.info(`returning existing prices for ${tariffCode}`)
   }
   return prices
 }
@@ -73,8 +75,7 @@ export const getPrices = async (tariffCode: string): Promise<Price[]> => {
 const getNewPrices = async (tariffCode: string) : Promise<Price[]> => {
   try {
     const productCode = tariffCode.split('-').slice(2, 6).join('-')
-    console.info(`tariff code: ${tariffCode}`)
-    console.info(`product code: ${productCode}`)
+    console.info(`getting new prices for product code: ${productCode}`)
     const url = `https://api.octopus.energy/v1/products/${productCode}/electricity-tariffs/${tariffCode}/standard-unit-rates/`
     const response = await fetch(url)
 
@@ -83,7 +84,6 @@ const getNewPrices = async (tariffCode: string) : Promise<Price[]> => {
     }
 
     const rates = await response.json()
-    console.log(`results JSON: ${JSON.stringify(rates)}`)
     if (rates.results.length < 1) return []
 
       return rates.results.map((rate: StandardUnitRate): Price => ({

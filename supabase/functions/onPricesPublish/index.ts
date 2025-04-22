@@ -17,10 +17,8 @@ Deno.serve(async () => {
 
   const responseData = []
 
-  results.forEach((prices, index) => {
-    console.info(`---------- Prices for ${tariffs[index]}:`)
+  results.forEach((prices) => {
     prices.forEach(price => {
-      console.info(`  ${price.start} - ${price.end}: £${price.price}`)
       responseData.push({
         tariff: price.tariff,
         price: price.price,
