@@ -29,6 +29,34 @@
       "when": 1745316148455,
       "tag": "0003_cheerful_venus",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1745402524235,
+      "tag": "0004_flawless_spitfire",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1745405437292,
+      "tag": "0005_awesome_solo",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1745405569114,
+      "tag": "0006_known_toro",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1745409433412,
+      "tag": "0007_giant_vargas",
+      "breakpoints": true
     }
   ]
 }

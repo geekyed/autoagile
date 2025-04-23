@@ -3,37 +3,36 @@
 // This enables autocomplete, go to definition, etc.
 
 // Setup type definitions for built-in Supabase Runtime APIs
-import "jsr:@supabase/functions-js/edge-runtime.d.ts"
-import { getUniqueTariffs } from "./profile/index.ts"
-import { getPrices } from "./octopus.ts"
+import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+import { getPrices } from "./octopus.ts";
+import { getUniqueTariffs } from "./db/profile/index.ts";
 
 Deno.serve(async () => {
-  console.info("Function 'onPricesPublish' invoked")
+  console.info("Function 'onPricesPublish' invoked");
 
-  const tariffs = await getUniqueTariffs()
+  const tariffs = await getUniqueTariffs();
 
-  const promises = tariffs.map(tariff => getPrices(tariff))
-  const results = await Promise.all(promises);
+  const promises = tariffs.map((tariff) => getPrices(tariff));
+  const tariffsPrices = await Promise.all(promises);
 
-  const responseData = []
+  const responseData: Price[] = [];
 
-  results.forEach((prices) => {
-    prices.forEach(price => {
+  tariffsPrices.forEach((tariffPrice) => {
+    tariffPrice.forEach((price) => {
       responseData.push({
         tariff: price.tariff,
         price: price.price,
-        created: price.created,
         start: price.start,
         end: price.end,
-      })
-    })
-  })
+      });
+    });
+  });
 
   return new Response(
-    JSON.stringify({data: responseData}),
+    JSON.stringify({ data: responseData }),
     { headers: { "Content-Type": "application/json" } },
-  )
-})
+  );
+});
 
 /* To invoke locally:
 

@@ -11,7 +11,6 @@ export type Database = {
     Tables: {
       prices: {
         Row: {
-          created: string
           end: string
           id: string
           price: number
@@ -19,7 +18,6 @@ export type Database = {
           tariff: string
         }
         Insert: {
-          created: string
           end: string
           id?: string
           price: number
@@ -27,7 +25,6 @@ export type Database = {
           tariff: string
         }
         Update: {
-          created?: string
           end?: string
           id?: string
           price?: number
@@ -65,7 +62,12 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      tariffs: {
+        Row: {
+          octopus_tariff: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       [_ in never]: never
