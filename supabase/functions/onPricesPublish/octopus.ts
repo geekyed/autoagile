@@ -1,6 +1,4 @@
-import { eq } from 'npm:drizzle-orm'
-import { db } from './db/index.ts'
-import { pricesTable } from './db/schema.ts'
+import { supabase } from './supabase/index.ts'
 
   
   interface MeterPoint {
@@ -44,10 +42,13 @@ const isOver23HoursAgo = (prices: Price[]): boolean => {
 }
 
 export const getPrices = async (tariffCode: string): Promise<Price[]> => {
+  const { data: dbPrices, error } = await supabase.from('prices').select().eq('tariff', tariffCode)
+  if (error) {
+    console.error('Error fetching prices from database:', error)
+    dbPrices = []
+  }
   let prices = []
-  prices = (await db.query.pricesTable.findMany({
-    where: eq(pricesTable.tariff, tariffCode)
-  })).map((dbPrice): Price => ({
+  prices = dbPrices.map((dbPrice): Price => ({
     tariff: dbPrice.tariff,
     price: parseFloat(dbPrice.price),
     created: dbPrice.created,
@@ -58,7 +59,7 @@ export const getPrices = async (tariffCode: string): Promise<Price[]> => {
   if (isOver23HoursAgo(prices)) {
     prices = await getNewPrices(tariffCode)
     if (prices.length > 0) {
-      await db.insert(pricesTable).values(prices.map((price) => ({
+      await supabase.from('prices').insert(prices.map((price) => ({
         tariff: price.tariff,
         price: price.price.toString(),
         created: price.created,
