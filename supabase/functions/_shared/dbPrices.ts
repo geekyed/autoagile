@@ -1,5 +1,5 @@
-import { Database } from "../../../../../database.types.ts";
-import { supabase } from "../index.ts";
+import { Database } from "../../../database.types.ts";
+import { supabase } from "./supabaseAdmin.ts";
 
 export const getPrices = async (tariffCode: string): Promise<Price[]> => {
   const { data: dbPrices, error } = await supabase.from("prices").select().eq(

@@ -1,28 +1,12 @@
-import {
-  deletePrices,
-  getPrices as getDbPrices,
-  insertPrices,
-} from "./db/prices/index.ts";
-
-const newPricesRequired = (prices: Price[]): boolean => {
-  if (prices.length === 0) return true;
-  return new Date().getTime() - prices[0].start.getTime() >
-    24 * 60 * 60 * 1000; // Over 24 hours old
-};
+import { deletePrices, insertPrices } from "../_shared/dbPrices.ts";
 
 export const getPrices = async (tariffCode: string): Promise<Price[]> => {
-  const dbPrices = await getDbPrices(tariffCode);
-
-  if (!newPricesRequired(dbPrices)) {
-    console.info(`returning existing prices for ${tariffCode}`);
-    return dbPrices;
-  }
   console.info(`getting new prices for ${tariffCode}`);
+
+  await deletePrices(tariffCode);
+
   const prices = await getNewPrices(tariffCode);
-  if (prices.length > 0) {
-    await deletePrices(tariffCode);
-    await insertPrices(prices);
-  }
+  if (prices.length > 0) await insertPrices(prices);
   return prices;
 };
 

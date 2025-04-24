@@ -1,7 +1,7 @@
-import { supabase } from "../index.ts";
+import { supabase } from "./supabaseAdmin.ts";
 
 export const getUniqueTariffs = async (): Promise<string[]> => {
-  console.info("Fetching unique tariffs from the database...");
+  console.info("Fetching unique tariffs from the database");
 
   const { data: profiles, error } = await supabase
     .from("tariffs")

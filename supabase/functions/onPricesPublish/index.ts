@@ -4,8 +4,8 @@
 
 // Setup type definitions for built-in Supabase Runtime APIs
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+import { getUniqueTariffs } from "../_shared/dbProfile.ts";
 import { getPrices } from "./octopus.ts";
-import { getUniqueTariffs } from "./db/profile/index.ts";
 
 Deno.serve(async () => {
   console.info("Function 'onPricesPublish' invoked");
@@ -13,23 +13,10 @@ Deno.serve(async () => {
   const tariffs = await getUniqueTariffs();
 
   const promises = tariffs.map((tariff) => getPrices(tariff));
-  const tariffsPrices = await Promise.all(promises);
-
-  const responseData: Price[] = [];
-
-  tariffsPrices.forEach((tariffPrice) => {
-    tariffPrice.forEach((price) => {
-      responseData.push({
-        tariff: price.tariff,
-        price: price.price,
-        start: price.start,
-        end: price.end,
-      });
-    });
-  });
+  await Promise.all(promises);
 
   return new Response(
-    JSON.stringify({ data: responseData }),
+    JSON.stringify({ success: true }),
     { headers: { "Content-Type": "application/json" } },
   );
 });
