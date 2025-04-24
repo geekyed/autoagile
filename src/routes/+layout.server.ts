@@ -1,9 +1,16 @@
-import type { LayoutServerLoad } from './$types'
+import { getOrCreateUserProfile } from "../lib/auth";
+import type { LayoutServerLoad } from "./$types";
 
-export const load: LayoutServerLoad = async ({ locals: { safeGetSession }, cookies }) => {
-  const { session } = await safeGetSession()
+export const load: LayoutServerLoad = async ({ locals, cookies }) => {
+  const { session } = await locals.safeGetSession();
+
+  let userProfile: UserProfile | null | undefined = null;
+  if (session) {
+    userProfile = await getOrCreateUserProfile(locals);
+  }
   return {
     session,
     cookies: cookies.getAll(),
-  }
-}
+    userProfile,
+  };
+};

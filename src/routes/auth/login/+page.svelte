@@ -12,8 +12,6 @@
     Login to the site!
   </CardHeader>
   <CardContent>
-
-      <Button href="/auth/login/github">sign in with github</Button>
-
+    <Button href="/auth/login/github">sign in with github</Button>
   </CardContent>
 </Card>
