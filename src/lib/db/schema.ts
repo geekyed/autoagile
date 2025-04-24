@@ -14,6 +14,8 @@ export const profileTable = pgTable("profile", {
   octopusAccountId: text("octopus_account_id").notNull(),
   octopusAPIKey: text("octopus_account_key").notNull(),
   octopusTariff: text("octopus_tariff"),
+  andersenUsername: text("andersen_username"),
+  andersenPassword: text("andersen_password"),
 });
 
 export const pricesTable = pgTable("prices", {
