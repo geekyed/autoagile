@@ -1,15 +1,8 @@
 <script lang="ts">
-	import { Button } from "../lib/components/ui/button";
-
-  const { session } = $props();
+  const { userProfile } = $props();
 </script>
 
 <div class="flex flex-col items-center justify-center">
-  {#if session === null}
-      <Button variant='secondary' href="/auth/login/github">Sign in with GitHub</Button>
-  {:else}
-      <Button variant='secondary' href="/auth/logout">Logout</Button>
-  {/if}
   <nav>
     <ul  class="flex flex-row m-2 gap-5">
       <li>
@@ -17,6 +10,7 @@
           <span class="flex-auto">Home</span>
         </a>
       </li>
+{#if userProfile}
       <li>
         <a href="/profile">
           <span class="flex-auto">Profile</span>
@@ -32,6 +26,7 @@
           <span class="flex-auto">Smart Devices</span>
         </a>
       </li>
+{/if}
     </ul>
   </nav>
 </div>

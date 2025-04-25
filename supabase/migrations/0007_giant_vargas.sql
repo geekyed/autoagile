@@ -1,1 +1,0 @@
-ALTER TABLE "prices" DROP COLUMN "created";

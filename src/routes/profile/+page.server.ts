@@ -25,8 +25,6 @@ export const actions = {
       email: zfd.text(),
       octopusAccountId: zfd.text(),
       octopusAPIKey: zfd.text(),
-      andersenUsername: zfd.text(),
-      andersenPassword: zfd.text(),
     });
 
     const { data, error: parseError } = schema.safeParse(
@@ -46,8 +44,6 @@ export const actions = {
       octopusAccountId: data.octopusAccountId,
       octopusAPIKey: data.octopusAPIKey,
       octopusTariff: tariffCode,
-      andersenUsername: data.andersenUsername,
-      andersenPassword: data.andersenPassword,
     }).where(eq(profileTable.id, userProfile.id));
 
     return { success: true };

@@ -13,8 +13,6 @@
   let octopusAccountID = $state('');
   let octopusAPIKey = $state('');
   let octopusTariff = $state('');
-  let andersenUsername = $state('');
-  let andersenPassword = $state('');
 
   $effect(() => {
     if (userProfile) {
@@ -23,12 +21,11 @@
       octopusAccountID = userProfile.octopusAccountId;
       octopusAPIKey = userProfile.octopusAPIKey;
       octopusTariff = userProfile.octopusTariff || '';
-      andersenUsername = userProfile.andersenUsername || '';
-      andersenPassword = userProfile.andersenPassword || '';
     }
   });
 
 </script>
+{#if userProfile}
 <Card>
   <CardHeader>
     Manage your profile
@@ -39,8 +36,6 @@
       formData.set('email', email);
       formData.set('octopusAccountId', octopusAccountID);
       formData.set('octopusAPIKey', octopusAPIKey);
-      formData.set('andersenUsername', andersenUsername);
-      formData.set('andersenPassword', andersenPassword);
       return ({result}) => {
         if (result.type === 'success') {
           window.location.reload();
@@ -70,16 +65,9 @@
           <Input bind:value={octopusTariff} disabled />
         </div>
         <div>
-          <Label>Andersen Username</Label>
-          <Input bind:value={andersenUsername} />
-        </div>
-        <div>
-          <Label>Andersen Password</Label>
-          <Input bind:value={andersenPassword} />
-        </div>
-        <div>
           <Button type='submit'>Update</Button>
         </div>
     </form>
   </CardContent>
 </Card>
+{/if}
