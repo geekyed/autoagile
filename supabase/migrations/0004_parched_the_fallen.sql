@@ -19,3 +19,6 @@ ALTER TABLE "prices" ALTER COLUMN "price" SET DATA TYPE double precision;--> sta
 ALTER TABLE "andersen_charge_timespan_table" ADD CONSTRAINT "andersen_charge_timespan_table_user_id_profile_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."profile"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "andersen_config_table" ADD CONSTRAINT "andersen_config_table_user_id_profile_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."profile"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "prices" DROP COLUMN "created";
+
+ALTER TABLE "andersen_config_table" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "andersen_charge_timespan_table" ENABLE ROW LEVEL SECURITY;
