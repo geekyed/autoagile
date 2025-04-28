@@ -10,7 +10,7 @@ import { getPrices } from "./octopus.ts";
 Deno.serve(async () => {
   console.info("Function 'onPricesPublish' invoked");
 
-  const tariffs = await getUniqueTariffs();
+  const tariffs = Array.from(await getUniqueTariffs());
 
   const promises = tariffs.map((tariff) => getPrices(tariff));
   await Promise.all(promises);

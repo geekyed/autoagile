@@ -6,6 +6,7 @@ export const getPrices = async (tariffCode: string): Promise<Price[]> => {
   await deletePrices(tariffCode);
 
   const prices = await getNewPrices(tariffCode);
+  console.info(`got ${prices.length} new prices for ${tariffCode}`);
   if (prices.length > 0) await insertPrices(prices);
   return prices;
 };

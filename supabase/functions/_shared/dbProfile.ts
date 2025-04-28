@@ -1,19 +1,29 @@
 import { supabase } from "./supabaseAdmin.ts";
 
-export const getUniqueTariffs = async (): Promise<string[]> => {
+export const getUniqueTariffs = async (): Promise<Set<string>> => {
   console.info("Fetching unique tariffs from the database");
 
-  const { data: profiles, error } = await supabase
-    .from("tariffs")
-    .select();
+  const { data, error } = await supabase.from("profile").select(
+    "octopus_tariff",
+  );
 
-  if (error || !profiles || profiles.length === 0) {
-    console.info("No tariffs found in the database.");
-    return [];
+  if (error) {
+    console.error("Error fetching profiles from database:", error);
+    return new Set<string>();
   }
 
-  return profiles.map((profile) => {
-    if (!profile.octopus_tariff) throw Error("Tariff is undefined");
-    return profile.octopus_tariff;
+  if (error || !data || data.length === 0) {
+    console.info("No profiles found in the database.");
+    return new Set<string>();
+  }
+
+  // Extract unique tariffs from the data
+  const uniqueTariffs = new Set<string>();
+  data.forEach((profile) => {
+    if (profile.octopus_tariff) {
+      uniqueTariffs.add(profile.octopus_tariff);
+    }
   });
+
+  return uniqueTariffs;
 };

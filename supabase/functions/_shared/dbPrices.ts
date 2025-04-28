@@ -29,6 +29,7 @@ export const insertPrices = async (prices: Price[]): Promise<void> => {
         end: p.end.toISOString(),
       };
     });
+  console.log("Prices to insert:", pricesToInsert);
   const { error } = await supabase.from("prices").insert(pricesToInsert);
   if (error) {
     console.error("Error inserting prices into database:", error);

@@ -9,6 +9,73 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      andersen_charge_timespan_table: {
+        Row: {
+          average_price: number
+          end_time: string
+          id: string
+          start_time: string
+          user_id: string
+        }
+        Insert: {
+          average_price: number
+          end_time: string
+          id?: string
+          start_time: string
+          user_id: string
+        }
+        Update: {
+          average_price?: number
+          end_time?: string
+          id?: string
+          start_time?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "andersen_charge_timespan_table_user_id_profile_id_fk"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profile"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      andersen_config_table: {
+        Row: {
+          andersen_password: string | null
+          andersen_username: string | null
+          battery_size: number
+          charge_rate: number
+          id: string
+          user_id: string | null
+        }
+        Insert: {
+          andersen_password?: string | null
+          andersen_username?: string | null
+          battery_size: number
+          charge_rate: number
+          id?: string
+          user_id?: string | null
+        }
+        Update: {
+          andersen_password?: string | null
+          andersen_username?: string | null
+          battery_size?: number
+          charge_rate?: number
+          id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "andersen_config_table_user_id_profile_id_fk"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profile"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       prices: {
         Row: {
           end: string

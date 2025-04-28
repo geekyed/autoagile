@@ -24,12 +24,6 @@ export const pricesTable = pgTable("prices", {
   end: timestamp("end", { precision: 6, withTimezone: true }).notNull(),
 });
 
-export const tariffsView = pgView("tariffs", {
-  octopusTariff: text("octopus_tariff").references(() =>
-    profileTable.octopusTariff
-  ).unique(),
-});
-
 export const andersenConfigTable = pgTable("andersen_config_table", {
   id: uuid("id").primaryKey().defaultRandom(),
   userId: uuid("user_id").references(() => profileTable.id),

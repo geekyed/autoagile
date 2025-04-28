@@ -5,6 +5,11 @@ interface UserProfile {
   octopusAccountId: string;
   octopusAPIKey: string;
   octopusTariff: string | null;
-  andersenUsername: string | null;
-  andersenPassword: string | null;
+}
+
+interface Price {
+  tariff: string;
+  price: number;
+  start: Date;
+  end: Date;
 }
