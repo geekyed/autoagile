@@ -29,7 +29,6 @@
 </script>
 
 {#if userProfile}
-  <h1>Welcome back, {userProfile.name}!</h1>
   <div class='flex flex-col items-center'>
     <p>prices for {new Date().toLocaleDateString()}</p>
       <ClockPriceDisplay {displayPrices} />
