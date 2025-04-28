@@ -8,7 +8,7 @@ export const load: PageServerLoad = async ({ locals }) => {
   if (session) {
     prices.push(
       ...((await getPrices(locals)).filter((price) => {
-        return price.start.getDate() === new Date().getUTCDate();
+        return price.start.getUTCDate() === new Date().getUTCDate();
       })),
     );
   }
