@@ -46,24 +46,24 @@
         }
       };
     }}>
-        <div class='flex flex-col gap-2'>
-          <Label>Percentage to charge</Label>
-          <div class='flex flex-row items-center gap-2'> 
-            <Slider value={[chargePercent]} onValueChange={(value) => chargePercent = value[0]} max={100} step={5} />
-            <Label>{chargePercent}%</Label>
-          </div>
+      <div class='flex flex-col gap-2'>
+        <Label>Percentage to charge</Label>
+        <div class='flex flex-row items-center gap-2'> 
+          <Slider type='single' bind:value={chargePercent} max={100} step={5} />
+          <Label>{chargePercent}%</Label>
         </div>
-        <div class='flex flex-col gap-2'>
-          <Label>Charge by time</Label>
-          <Input bind:value={endTime} />
+      </div>
+      <div class='flex flex-col gap-2'>
+        <Label>Charge by time</Label>
+        <Input bind:value={endTime} />
+      </div>
+      <div class='flex flex-row gap-2'>
+        <Button type='submit'>Update</Button>
+        <div class="flex flex-col items-center gap-2">
+          <Label>Average Price</Label>
+          <Label>{Math.floor(averagePrice()*10)/10}p</Label>
         </div>
-        <div class='flex flex-row gap-2'>
-          <Button type='submit'>Update</Button>
-          <div class="flex flex-col items-center gap-2">
-            <Label>Average Price</Label>
-            <Label>{averagePrice()}p</Label>
-          </div>
-        </div>
+      </div>
     </form>
   </CardContent>
 </Card>
