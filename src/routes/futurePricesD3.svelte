@@ -71,11 +71,8 @@
           .attr("y", -rowHeight)
           .attr("width", barWidth)
           .attr("height", rowHeight)
-          .attr("fill", "green")
-          .transition()
-          .duration(400)
-          .ease(d3.easeCubicOut)
-          .attr("y", 0); // Slide down animation
+          .attr("fill", "#ff0000")
+
       }
 
       // Time label (LEFT)

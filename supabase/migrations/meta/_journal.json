@@ -36,6 +36,13 @@
       "when": 1745571831954,
       "tag": "0004_parched_the_fallen",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1745913827776,
+      "tag": "0005_silky_sleepwalker",
+      "breakpoints": true
     }
   ]
 }

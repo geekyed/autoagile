@@ -43,28 +43,28 @@ export type Database = {
       }
       andersen_config_table: {
         Row: {
-          andersen_password: string | null
-          andersen_username: string | null
+          andersen_password: string
+          andersen_username: string
           battery_size: number
           charge_rate: number
           id: string
-          user_id: string | null
+          user_id: string
         }
         Insert: {
-          andersen_password?: string | null
-          andersen_username?: string | null
+          andersen_password: string
+          andersen_username: string
           battery_size: number
           charge_rate: number
           id?: string
-          user_id?: string | null
+          user_id: string
         }
         Update: {
-          andersen_password?: string | null
-          andersen_username?: string | null
+          andersen_password?: string
+          andersen_username?: string
           battery_size?: number
           charge_rate?: number
           id?: string
-          user_id?: string | null
+          user_id?: string
         }
         Relationships: [
           {
@@ -129,12 +129,7 @@ export type Database = {
       }
     }
     Views: {
-      tariffs: {
-        Row: {
-          octopus_tariff: string | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
       [_ in never]: never

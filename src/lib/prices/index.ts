@@ -22,7 +22,5 @@ export const getPrices = async (locals: App.Locals): Promise<Price[]> => {
     where: eq(pricesTable.tariff, currentProfile?.octopusTariff || ""),
   });
 
-  console.log("Prices fetched from database:", prices);
-
   return prices;
 };

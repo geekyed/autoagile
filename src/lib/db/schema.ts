@@ -1,7 +1,6 @@
 import {
   doublePrecision,
   pgTable,
-  pgView,
   text,
   timestamp,
   uuid,
@@ -26,9 +25,9 @@ export const pricesTable = pgTable("prices", {
 
 export const andersenConfigTable = pgTable("andersen_config_table", {
   id: uuid("id").primaryKey().defaultRandom(),
-  userId: uuid("user_id").references(() => profileTable.id),
-  andersenUsername: text("andersen_username"),
-  andersenPassword: text("andersen_password"),
+  userId: uuid("user_id").references(() => profileTable.id).notNull(),
+  andersenUsername: text("andersen_username").notNull(),
+  andersenPassword: text("andersen_password").notNull(),
   batterySize: doublePrecision("battery_size").notNull(),
   chargeRate: doublePrecision("charge_rate").notNull(),
 });

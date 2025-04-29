@@ -3,7 +3,9 @@ import { db } from "../db";
 import { andersenConfigTable } from "../db/schema";
 import { error } from "@sveltejs/kit";
 
-export const getOrCreateCarConfig = async (locals: App.Locals) => {
+export const getOrCreateCarConfig = async (
+  locals: App.Locals,
+) => {
   const { user } = await locals.safeGetSession();
 
   if (!user) {
@@ -15,7 +17,7 @@ export const getOrCreateCarConfig = async (locals: App.Locals) => {
   });
 
   if (currentCarConfig) {
-    return currentCarConfig;
+    return currentCarConfig as CarChargeConfig;
   }
 
   await db.insert(andersenConfigTable).values({
@@ -26,12 +28,12 @@ export const getOrCreateCarConfig = async (locals: App.Locals) => {
     chargeRate: 0,
   });
 
-  const newConfig = db.query.andersenConfigTable.findFirst({
+  const newConfig = await db.query.andersenConfigTable.findFirst({
     where: eq(andersenConfigTable.userId, user.id),
   });
 
   if (!newConfig) {
     error(500, "Failed to create car charging configuration");
   }
-  return newConfig;
+  return newConfig as CarChargeConfig;
 };

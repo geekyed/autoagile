@@ -20,3 +20,12 @@ interface AndersenChargeTimespan {
   endTime: Date;
   averagePrice: number;
 }
+
+interface CarChargeConfig {
+  id: string;
+  userId: string;
+  andersenUsername: string;
+  andersenPassword: string;
+  batterySize: number;
+  chargeRate: number;
+}

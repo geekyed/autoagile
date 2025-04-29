@@ -1,14 +1,19 @@
-import { getCarChargeTimespan } from "../lib/carChargeTimespan";
+import { error } from "@sveltejs/kit";
+import {
+  createNewChargeTimespans,
+  getCarChargeTimespan,
+} from "../lib/carChargeTimespan";
+import { getOrCreateCarConfig } from "../lib/carConfig";
 import { getPrices } from "../lib/prices";
 import type { PageServerLoad } from "./$types";
+import { zfd } from "zod-form-data";
 
 export const load: PageServerLoad = async ({ locals }) => {
   const { session } = await locals.safeGetSession();
 
   const prices: Price[] = [];
   const carChargeTimespans: AndersenChargeTimespan[] = [];
-
-  console.log("-------------------", carChargeTimespans);
+  let carChargeConfig: CarChargeConfig | null = null;
 
   function floorToNearest30Minutes(date: Date): Date {
     const floored = new Date(date);
@@ -26,9 +31,46 @@ export const load: PageServerLoad = async ({ locals }) => {
     );
     prices.sort((a, b) => a.start.getTime() - b.start.getTime());
     carChargeTimespans.push(...(await getCarChargeTimespan(locals) || []));
+    carChargeConfig = await getOrCreateCarConfig(locals);
   }
   return {
     prices,
     carChargeTimespans,
+    carChargeConfig,
   };
+};
+
+export const actions = {
+  default: async ({ request, locals }) => {
+    const { user } = await locals.safeGetSession();
+    console.info("Car charging request received");
+    const carChargingConfig = await getOrCreateCarConfig(locals);
+    if (!carChargingConfig) {
+      console.error("Car charging config not found");
+      error(401, "Unauthorized");
+    }
+
+    const schema = zfd.formData({
+      chargePercent: zfd.numeric(),
+      endTime: zfd.text(),
+    });
+
+    const { data, error: parseError } = schema.safeParse(
+      await request.formData(),
+    );
+    if (parseError) {
+      console.error("Error parsing car charging schema");
+      error(400, parseError?.message);
+    }
+
+    try {
+      await createNewChargeTimespans(locals, data.endTime, data.chargePercent);
+    } catch (e) {
+      console.error("Error creating new charge timespans", e);
+      error(500, "Failed to create new charge timespans");
+    }
+
+    console.info("Updated car charging config in database", user?.id, data);
+    return { success: true };
+  },
 };
