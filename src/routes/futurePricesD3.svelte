@@ -46,8 +46,6 @@
     cells.each(function (d) {
       const g = d3.select(this);
 
-      const priceStart = new Date(d.start).getTime();
-
       // Background rectangle
       g.append("rect")
         .attr("x", 0)
@@ -58,11 +56,11 @@
         .attr("stroke", "#fff")
         .attr("stroke-width", 1);
 
-      // Green bar if charging
+      const priceStart = d.start.getTime();
+      const priceEnd = d.end.getTime();
+
       const isCharging = carChargeTimespans.some(span => {
-        const spanStart = new Date(span.startTime).getTime();
-        const spanEnd = new Date(span.endTime).getTime();
-        return priceStart >= spanStart && priceStart < spanEnd;
+        return priceEnd >= span.startTime.getTime() && priceStart <= span.endTime.getTime();
       });
 
       if (isCharging) {
@@ -72,7 +70,6 @@
           .attr("width", barWidth)
           .attr("height", rowHeight)
           .attr("fill", "#ff0000")
-
       }
 
       // Time label (LEFT)

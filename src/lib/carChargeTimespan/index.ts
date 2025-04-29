@@ -59,6 +59,7 @@ export const createNewChargeTimespans = async (
       averagePrice: timespan.averagePrice,
     })),
   );
+  return newTimespans.chargeTimespans;
 };
 
 const generateCarChargeTimespans = (

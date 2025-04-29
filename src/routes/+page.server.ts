@@ -64,13 +64,16 @@ export const actions = {
     }
 
     try {
-      await createNewChargeTimespans(locals, data.endTime, data.chargePercent);
+      const timespans = await createNewChargeTimespans(
+        locals,
+        data.endTime,
+        data.chargePercent,
+      );
+      console.info("Updated car charging config in database", user?.id, data);
+      return { success: true, timespans };
     } catch (e) {
       console.error("Error creating new charge timespans", e);
       error(500, "Failed to create new charge timespans");
     }
-
-    console.info("Updated car charging config in database", user?.id, data);
-    return { success: true };
   },
 };

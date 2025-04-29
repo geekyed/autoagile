@@ -6,7 +6,12 @@
 	import { Input } from '../lib/components/ui/input';
 	import { Label } from '../lib/components/ui/label';
 
-  const { carChargingConfig } = $props()
+  interface PropsType {
+    carChargingConfig: CarChargeConfig | null;
+    carChargeTimespans: AndersenChargeTimespan[];
+  }
+
+  let { carChargingConfig, carChargeTimespans = $bindable() }: PropsType = $props()
 
   let chargePercent = $state(20);
   let endTime = $state('00:00');
@@ -23,10 +28,12 @@
       formData.set('endTime', endTime);
       return ({result}) => {
         if (result.type === 'success') {
+          console.log('Success', result?.data?.timespans);
+          carChargeTimespans.push(...(result?.data?.timespans as AndersenChargeTimespan[]));
           invalidate('/');
         } else {
           console.error(result.status, result.type);
-          if(result.type === 'error') {
+          if (result.type === 'error') {
             alert(JSON.stringify(result.error));
           }
         }
