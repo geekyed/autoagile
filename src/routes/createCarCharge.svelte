@@ -5,6 +5,7 @@
 	import { Card, CardContent, CardHeader } from '../lib/components/ui/card';
 	import { Input } from '../lib/components/ui/input';
 	import { Label } from '../lib/components/ui/label';
+	import { Slider } from '../lib/components/ui/slider';
 
   interface PropsType {
     carChargingConfig: CarChargeConfig | null;
@@ -24,7 +25,7 @@
 
 </script>
 {#if carChargingConfig}
-<Card>
+<Card class='w-full max-w-xl'>
   <CardHeader>
     Setup next charge
   </CardHeader>
@@ -45,11 +46,14 @@
         }
       };
     }}>
-        <div>
+        <div class='flex flex-col gap-2'>
           <Label>Percentage to charge</Label>
-          <Input bind:value={chargePercent} />
+          <div class='flex flex-row items-center gap-2'> 
+            <Slider value={[chargePercent]} onValueChange={(value) => chargePercent = value[0]} max={100} step={5} />
+            <Label>{chargePercent}%</Label>
+          </div>
         </div>
-        <div>
+        <div class='flex flex-col gap-2'>
           <Label>Charge by time</Label>
           <Input bind:value={endTime} />
         </div>
