@@ -3,7 +3,7 @@
 
   const { prices, carChargeTimespans }: { prices: Price[]; carChargeTimespans: AndersenChargeTimespan[] } = $props();
 
-  const width = 280;
+  const width = 350;
   const rowHeight = 25;
   const rowSpacing = 2;
   const barWidth = 5;
@@ -59,18 +59,28 @@
       const priceStart = d.start.getTime();
       const priceEnd = d.end.getTime();
 
-      const isCharging = carChargeTimespans.some(span => {
-        return priceEnd >= span.startTime.getTime() && priceStart <= span.endTime.getTime();
+      const isCharging = carChargeTimespans.some((span) => {
+        return span.startTime.getTime() <= priceStart && span.endTime.getTime() >= priceEnd;
       });
+
+      function darkenColor(hex: string, factor: number = 0.7): string {
+        const c = d3.color(hex);
+        if (c && "r" in c && "g" in c && "b" in c) {
+          const { r, g, b } = c;
+          return d3.rgb(r * factor, g * factor, b * factor).formatHex();
+        }
+        return hex; // fallback if invalid color
+      }
 
       if (isCharging) {
         g.append("rect")
-          .attr("x", 0)
-          .attr("y", -rowHeight)
+          .attr("x", 240)
+          .attr("y", 0)
           .attr("width", barWidth)
           .attr("height", rowHeight)
-          .attr("fill", "#ff0000")
+          .attr("fill", darkenColor(getColor(d.price)))
       }
+
 
       // Time label (LEFT)
       const timeText = new Date(d.start).toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });

@@ -8,7 +8,7 @@
   const {userProfile, prices, carChargeTimespans, carChargeConfig} = data;
 
   let chargeTimespans: AndersenChargeTimespan[] = $state([])
-  chargeTimespans = carChargeTimespans;
+  chargeTimespans = [...carChargeTimespans];
 
   const today = new Date();
   const tomorrow = new Date();
@@ -19,6 +19,10 @@
 
   console.log(pricesToday);
   console.log(carChargeTimespans);
+
+  $effect(() => {
+    console.log('chargeTimespans changed!!', chargeTimespans);
+  });
 </script>
 
 {#if userProfile}
@@ -26,13 +30,13 @@
   <CreateCarCharge carChargingConfig={carChargeConfig} bind:carChargeTimespans={chargeTimespans}/>
   <Label>{pricesToday[0].start.toDateString()}</Label>
   <ScrollArea class="flex flex-row items-center h-[300px] w-[300px] rounded-md border p-4">
-      <FuturePricesD3 prices={pricesToday} {carChargeTimespans} />
+      <FuturePricesD3 prices={pricesToday} carChargeTimespans={chargeTimespans} />
   </ScrollArea>
   
 {#if pricesTomorrow.length > 0}
   <Label>{pricesToday[0].start.toDateString()}</Label>
   <ScrollArea class="flex flex-row items-center h-[300px] w-[300px] rounded-md border p-4">
-      <FuturePricesD3 prices={pricesTomorrow} {carChargeTimespans} />
+      <FuturePricesD3 prices={pricesTomorrow} carChargeTimespans={chargeTimespans} />
   </ScrollArea>
 {/if}
 </div>

@@ -18,7 +18,7 @@
 	});
 </script>
 
-<div class="flex flex-col items-center">
+<div class="flex flex-col items-center gap-10">
 	<div class="flex flex-row items-center justify-between w-full max-w-3xl p-4">
 		<h1>Octomiser</h1>
 		{#if userProfile === null}
