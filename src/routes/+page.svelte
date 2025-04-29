@@ -1,38 +1,37 @@
 <script lang='ts'>
-	import ClockPriceDisplay from './clockPriceDisplay.svelte';
+	import Label from '../lib/components/ui/label/label.svelte';
+	import { ScrollArea } from '../lib/components/ui/scroll-area';
+	import FuturePricesD3 from './futurePricesD3.svelte';
 
   const { data } = $props()
-  const {userProfile, prices} = data;
+  const {userProfile, prices, carChargeTimespans} = data;
 
-  const intervals = [
-    "00:00", "00:30", "01:00", "01:30", "02:00", "02:30",
-    "03:00", "03:30", "04:00", "04:30", "05:00", "05:30",
-    "06:00", "06:30", "07:00", "07:30", "08:00", "08:30",
-    "09:00", "09:30", "10:00", "10:30", "11:00", "11:30",
-    "12:00", "12:30", "13:00", "13:30", "14:00", "14:30",
-    "15:00", "15:30", "16:00", "16:30", "17:00", "17:30",
-    "18:00", "18:30", "19:00", "19:30", "20:00", "20:30",
-    "21:00", "21:30", "22:00", "22:30", "23:00", "23:30"
-  ];
+  const today = new Date();
+  const tomorrow = new Date();
+  tomorrow.setDate(today.getDate() + 1);
 
-  const displayPrices = $derived.by(() => {
-  const myPrices: {key: string, value: number}[] = []
-  intervals.forEach((interval, i) => {
-    myPrices[i] = { 
-        key: interval, 
-        value: prices.find(price => price.start.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) === interval)?.price || 999
-      };
-    })
-    return myPrices;
-  }
-  );
+  const pricesToday = prices.filter((price) => price.start.getDay() === today.getDay());
+  const pricesTomorrow = prices.filter((price) => price.start.getDay() === tomorrow.getDay());
+
+  console.log('pricesToday', pricesToday);
+  console.log('pricesTomorrow', pricesTomorrow);
+
 </script>
 
 {#if userProfile}
-  <div class='flex flex-col items-center'>
-    <p>prices for {new Date().toLocaleDateString()}</p>
-      <ClockPriceDisplay {displayPrices} />
-  </div>
+<div class='flex flex-col items-center'>
+  <Label>{pricesToday[0].start.toDateString()}</Label>
+  <ScrollArea class="flex flex-row items-center h-[300px] w-[300px] rounded-md border p-4">
+      <FuturePricesD3 prices={pricesToday} {carChargeTimespans} />
+  </ScrollArea>
+  
+{#if pricesTomorrow.length > 0}
+  <Label>{pricesToday[0].start.toDateString()}</Label>
+  <ScrollArea class="flex flex-row items-center h-[300px] w-[300px] rounded-md border p-4">
+      <FuturePricesD3 prices={pricesTomorrow} {carChargeTimespans} />
+  </ScrollArea>
+{/if}
+</div>
 {:else}
-  <h1>Welcome to the site!</h1>
+  <h1>Please log in!</h1>
 {/if}

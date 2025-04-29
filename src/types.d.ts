@@ -13,3 +13,10 @@ interface Price {
   start: Date;
   end: Date;
 }
+
+interface AndersenChargeTimespan {
+  userId: string;
+  startTime: Date;
+  endTime: Date;
+  averagePrice: number;
+}
