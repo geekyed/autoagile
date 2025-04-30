@@ -25,14 +25,19 @@
   });
 </script>
 
-{#if userProfile}
+
+  {#if userProfile}
 <div class='flex flex-col items-center gap-5'>
+{#if pricesToday.length > 0}
   <CreateCarCharge carChargingConfig={carChargeConfig} bind:carChargeTimespans={chargeTimespans}/>
   <Label>{pricesToday[0].start.toDateString()}</Label>
   <ScrollArea class="flex flex-row items-center h-[300px] w-[300px] rounded-md border p-4">
       <FuturePricesD3 prices={pricesToday} carChargeTimespans={chargeTimespans} />
   </ScrollArea>
-  
+{:else}
+  <h1 class='text-2xl font-bold'>No prices for today</h1>
+{/if}
+
 {#if pricesTomorrow.length > 0}
   <Label>{pricesToday[0].start.toDateString()}</Label>
   <ScrollArea class="flex flex-row items-center h-[300px] w-[300px] rounded-md border p-4">

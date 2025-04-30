@@ -4,20 +4,70 @@
 
 // Setup type definitions for built-in Supabase Runtime APIs
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+import { getAndersenChargeTimespans } from "./dbAndersenChargeTimespan.ts";
+import { getAndersenChargeConfig } from "./dbAndersenConfig.ts";
+import AndersenA2 from "./andersen/AndersenA2.ts";
 
-console.log("Hello from Functions!");
+Deno.serve(async () => {
+  console.log("Function 'chargeController' invoked");
 
-Deno.serve(async (req) => {
-  const { name } = await req.json();
-  const data = {
-    message: `Hello ${name}!`,
-  };
+  const now = new Date();
+  const chargeTimespans = await getAndersenChargeTimespans();
+
+  for (const timespan of chargeTimespans) {
+    const isStart = equalWithFuzziness(timespan.startTime, now, 5);
+    const isEnd = equalWithFuzziness(timespan.endTime, now, 5);
+    if (isStart || isEnd) {
+      try {
+        const { andersenUsername, andersenPassword } =
+          await getAndersenChargeConfig(timespan.userId);
+
+        if (!andersenUsername || !andersenPassword) {
+          console.error(
+            `Error fetching car charge config from database for user: ${timespan.userId}`,
+          );
+          return new Response(
+            JSON.stringify({ error: "Failed to fetch car charge config" }),
+            { status: 500, headers: { "Content-Type": "application/json" } },
+          );
+        }
+
+        const andersenA2 = new AndersenA2(andersenUsername, andersenPassword);
+        await andersenA2.init();
+
+        if (isStart) {
+          await andersenA2.unlock();
+        } else {
+          await andersenA2.lock();
+        }
+      } catch (error) {
+        console.error(
+          `Error during AndersenA2 operation ${timespan.userId}, ${timespan.startTime}, ${timespan.endTime}:`,
+          error,
+        );
+        break;
+      }
+    }
+  }
 
   return new Response(
-    JSON.stringify(data),
+    JSON.stringify({ success: true }),
     { headers: { "Content-Type": "application/json" } },
   );
 });
+
+const equalWithFuzziness = (
+  date1: Date | undefined,
+  date2: Date | undefined,
+  fuzzinessInMinutes: number,
+) => {
+  if (!date1 && !date2) return true;
+  if (!date1 || !date2) return false;
+  const timeDifference = Math.abs(date1.getTime() - date2.getTime());
+  const fuzzinessInMilliseconds = fuzzinessInMinutes * 60 * 1000;
+
+  return timeDifference <= fuzzinessInMilliseconds;
+};
 
 /* To invoke locally:
 
