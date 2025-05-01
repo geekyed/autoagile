@@ -26,9 +26,8 @@
 </script>
 
 
-  {#if userProfile}
+{#if userProfile}
 <div class='flex flex-col items-center gap-5'>
-  STREAMING
 {#if pricesToday.length > 0}
   <CreateCarCharge carChargingConfig={carChargeConfig} bind:carChargeTimespans={chargeTimespans}/>
   <Label>{pricesToday[0].start.toLocaleDateString()}</Label>

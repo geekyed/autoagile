@@ -25,45 +25,47 @@
 
 </script>
 {#if carChargingConfig}
-<Card>
-  <CardHeader>
-    Manage your Car Charging Configuration
-  </CardHeader>
-  <CardContent>
-    <form class='flex flex-col gap-2' method="post" use:enhance={({formData}) => {
-      formData.set('andersenUsername', andersenUsername);
-      formData.set('andersenPassword', andersenPassword);
-      formData.set('batterySize', batterySize.toString());
-      formData.set('chargeRate', chargeRate.toString());
-      return ({result}) => {
-        if (result.type === 'success') {
-          invalidate("/");
-        } else {
-          console.error(result.status, result.type);
-          alert('Failed to update car charging configuration');
-        }
-      };
-    }}>
-        <div>
-          <Label>Andersen Username</Label>
-          <Input bind:value={andersenUsername} />
-        </div>
-        <div>
-          <Label>Andersen Password</Label>
-          <Input bind:value={andersenPassword} />
-        </div>
-        <div>
-          <Label>Charge Rate kW</Label>
-          <Input bind:value={chargeRate} />
-        </div>
-        <div>
-          <Label>Battery Size kWh</Label>
-          <Input bind:value={batterySize} />
-        </div>
-        <div>
-          <Button type='submit'>Update</Button>
-        </div>
-    </form>
-  </CardContent>
-</Card>
+<div class='flex flex-col items-center gap-5'>
+  <Card class='w-full max-w-xl'>
+    <CardHeader>
+      Manage your Car Charging Configuration
+    </CardHeader>
+    <CardContent>
+      <form class='flex flex-col gap-2' method="post" use:enhance={({formData}) => {
+        formData.set('andersenUsername', andersenUsername);
+        formData.set('andersenPassword', andersenPassword);
+        formData.set('batterySize', batterySize.toString());
+        formData.set('chargeRate', chargeRate.toString());
+        return ({result}) => {
+          if (result.type === 'success') {
+            invalidate("/");
+          } else {
+            console.error(result.status, result.type);
+            alert('Failed to update car charging configuration');
+          }
+        };
+      }}>
+          <div>
+            <Label>Andersen Username</Label>
+            <Input bind:value={andersenUsername} />
+          </div>
+          <div>
+            <Label>Andersen Password</Label>
+            <Input bind:value={andersenPassword} />
+          </div>
+          <div>
+            <Label>Charge Rate kW</Label>
+            <Input bind:value={chargeRate} />
+          </div>
+          <div>
+            <Label>Battery Size kWh</Label>
+            <Input bind:value={batterySize} />
+          </div>
+          <div>
+            <Button type='submit'>Update</Button>
+          </div>
+      </form>
+    </CardContent>
+  </Card>
+</div>
 {/if}
