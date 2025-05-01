@@ -21,7 +21,7 @@ interface AndersenChargeTimespan {
   averagePrice: number;
 }
 
-interface CarChargeConfig {
+interface AndersenChargeConfig {
   id: string;
   userId: string;
   andersenUsername: string;

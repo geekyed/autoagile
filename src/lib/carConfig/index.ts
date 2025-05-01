@@ -17,7 +17,7 @@ export const getOrCreateCarConfig = async (
   });
 
   if (currentCarConfig) {
-    return currentCarConfig as CarChargeConfig;
+    return currentCarConfig as AndersenChargeConfig;
   }
 
   await db.insert(andersenConfigTable).values({
@@ -35,5 +35,5 @@ export const getOrCreateCarConfig = async (
   if (!newConfig) {
     error(500, "Failed to create car charging configuration");
   }
-  return newConfig as CarChargeConfig;
+  return newConfig as AndersenChargeConfig;
 };
