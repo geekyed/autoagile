@@ -27,9 +27,6 @@
 {#if carChargingConfig}
 <div class='flex flex-col items-center gap-5'>
   <Card class='w-full max-w-xl'>
-    <CardHeader>
-      Manage your Car Charging Configuration
-    </CardHeader>
     <CardContent>
       <form class='flex flex-col gap-2' method="post" use:enhance={({formData}) => {
         formData.set('andersenUsername', andersenUsername);

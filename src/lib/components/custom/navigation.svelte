@@ -1,26 +1,53 @@
 <script lang="ts">
-
+  import { page } from '$app/stores';
+  $: currentPath = $page.url.pathname;
 </script>
 
-<div class="flex flex-col items-center justify-center">
-  <nav>
-    <ul  class="flex flex-row m-2 gap-5">
-      <li>
-        <a href="/">
-          <span class="flex-auto">Home</span>
-        </a>
-      </li>
+<nav class="w-full">
+  <ul class="flex justify-center gap-8 py-4">
+    <li>
+      <a
+        href="/"
+        class="group relative pb-1 text-gray-700 dark:text-gray-300 hover:text-purple-700 transition-colors duration-300"
+      >
+        Home
+        {#if currentPath === '/'}
+          <span class="absolute left-0 bottom-0 w-full h-[2px] bg-[rgb(109,40,217)] transition-all duration-300"></span>
+        {/if}
+        <span
+          class="absolute left-0 bottom-0 w-0 h-[2px] bg-[rgb(109,40,217)] group-hover:w-full transition-all duration-300"
+        ></span>
+      </a>
+    </li>
 
-      <li>
-        <a href="/profile">
-          <span class="flex-auto">Profile</span>
-        </a>
-      </li>
-      <li>
-        <a href="/car-charging">
-          <span class="flex-auto">Car Charge</span>
-        </a>
-      </li>
-    </ul>
-  </nav>
-</div>
+    <li>
+      <a
+        href="/profile"
+        class="group relative pb-1 text-gray-700 dark:text-gray-300 hover:text-purple-700 transition-colors duration-300"
+      >
+        Profile
+        {#if currentPath === '/profile'}
+          <span class="absolute left-0 bottom-0 w-full h-[2px] bg-[rgb(109,40,217)] transition-all duration-300"></span>
+        {/if}
+        <span
+          class="absolute left-0 bottom-0 w-0 h-[2px] bg-[rgb(109,40,217)] group-hover:w-full transition-all duration-300"
+        ></span>
+      </a>
+    </li>
+
+    <li>
+      <a
+        href="/car-charging"
+        class="group relative pb-1 text-gray-700 dark:text-gray-300 hover:text-purple-700 transition-colors duration-300"
+      >
+        Car Charge
+        {#if currentPath === '/car-charging'}
+          <span class="absolute left-0 bottom-0 w-full h-[2px] bg-[rgb(109,40,217)] transition-all duration-300"></span>
+        {/if}
+        <span
+          class="absolute left-0 bottom-0 w-0 h-[2px] bg-[rgb(109,40,217)] group-hover:w-full transition-all duration-300"
+        ></span>
+      </a>
+    </li>
+  </ul>
+</nav>
