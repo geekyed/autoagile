@@ -7,8 +7,7 @@ import { getOrCreateCarConfig } from "../../lib/carConfig";
 
 export const load = async ({ locals }) => {
   console.info("load running");
-  const carChargingConfig = await getOrCreateCarConfig(locals);
-  return { carChargingConfig };
+  return { carChargingConfig: await getOrCreateCarConfig(locals) };
 };
 
 export const actions = {

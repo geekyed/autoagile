@@ -8,8 +8,7 @@ import { getTariffCode } from "../../lib/octopus";
 
 export const load = async ({ locals }) => {
   console.info("load running");
-  const userProfile = await getOrCreateUserProfile(locals);
-  return { userProfile };
+  return { userProfile: await getOrCreateUserProfile(locals) };
 };
 
 export const actions = {

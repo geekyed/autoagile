@@ -5,17 +5,24 @@ import { getOrCreateCarConfig } from "../carConfig";
 import { getPrices } from "../prices";
 import { error } from "@sveltejs/kit";
 
-export const getCarChargeTimespan = async (locals: App.Locals) => {
+export const getCarChargeTimespan = async (
+  locals: App.Locals,
+): Promise<AndersenChargeTimespan[]> => {
   const { user } = await locals.safeGetSession();
 
   if (!user) {
-    return null;
+    console.error("User not found when accessing timespans");
+    return [];
   }
 
   const carChargeTimespans = await db.query.andersenChargeTimespanTable
     .findMany({
       where: eq(andersenConfigTable.userId, user.id),
     });
+
+  if (!carChargeTimespans) {
+    return [];
+  }
 
   return carChargeTimespans;
 };
@@ -63,7 +70,7 @@ export const createNewChargeTimespans = async (
 };
 
 const generateCarChargeTimespans = (
-  chargeConfig: CarChargeConfig,
+  chargeConfig: AndersenChargeConfig,
   toTime: string,
   percentCharge: number,
   prices: Price[],

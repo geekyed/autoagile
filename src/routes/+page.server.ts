@@ -11,33 +11,35 @@ import { zfd } from "zod-form-data";
 export const load: PageServerLoad = async ({ locals }) => {
   const { session } = await locals.safeGetSession();
 
-  const prices: Price[] = [];
-  const carChargeTimespans: AndersenChargeTimespan[] = [];
-  let carChargeConfig: CarChargeConfig | null = null;
-
-  function floorToNearest30Minutes(date: Date): Date {
-    const floored = new Date(date);
-    const minutes = floored.getMinutes();
-    const flooredMinutes = minutes < 30 ? 0 : 30;
-    floored.setMinutes(flooredMinutes, 0, 0); // set minutes, seconds, milliseconds to 0
-    return floored;
+  if (!session) {
+    return {
+      prices: [],
+      carChargeTimespans: [],
+      carChargeConfig: null,
+    };
   }
 
-  if (session) {
-    prices.push(
-      ...((await getPrices(locals)).filter((price) =>
-        price.start >= floorToNearest30Minutes(new Date())
-      ) || []),
-    );
-    prices.sort((a, b) => a.start.getTime() - b.start.getTime());
-    carChargeTimespans.push(...(await getCarChargeTimespan(locals) || []));
-    carChargeConfig = await getOrCreateCarConfig(locals);
-  }
   return {
-    prices,
-    carChargeTimespans,
-    carChargeConfig,
+    prices: await getSortedPrices(locals),
+    carChargeTimespans: await getCarChargeTimespan(locals),
+    carChargeConfig: await getOrCreateCarConfig(locals),
   };
+};
+
+const floorToNearest30Minutes = (date: Date): Date => {
+  const floored = new Date(date);
+  const minutes = floored.getMinutes();
+  const flooredMinutes = minutes < 30 ? 0 : 30;
+  floored.setMinutes(flooredMinutes, 0, 0); // set minutes, seconds, milliseconds to 0
+  return floored;
+};
+
+const getSortedPrices = async (locals: App.Locals): Promise<Price[]> => {
+  return [
+    ...((await getPrices(locals)).filter((price) =>
+      price.start >= floorToNearest30Minutes(new Date())
+    ) || []),
+  ].sort((a, b) => a.start.getTime() - b.start.getTime());
 };
 
 export const actions = {

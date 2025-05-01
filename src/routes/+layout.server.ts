@@ -4,13 +4,17 @@ import type { LayoutServerLoad } from "./$types";
 export const load: LayoutServerLoad = async ({ locals, cookies }) => {
   const { session } = await locals.safeGetSession();
 
-  let userProfile: UserProfile | null | undefined = null;
-  if (session) {
-    userProfile = await getOrCreateUserProfile(locals);
+  const userProfile: UserProfile | null | undefined = null;
+  if (!session) {
+    return {
+      session,
+      cookies: cookies.getAll(),
+      userProfile,
+    };
   }
   return {
     session,
     cookies: cookies.getAll(),
-    userProfile,
+    userProfile: await getOrCreateUserProfile(locals),
   };
 };
