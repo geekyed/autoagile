@@ -28,9 +28,10 @@
 
   {#if userProfile}
 <div class='flex flex-col items-center gap-5'>
+  STREAMING
 {#if pricesToday.length > 0}
   <CreateCarCharge carChargingConfig={carChargeConfig} bind:carChargeTimespans={chargeTimespans}/>
-  <Label>{pricesToday[0].start.toDateString()}</Label>
+  <Label>{pricesToday[0].start.toLocaleDateString()}</Label>
   <ScrollArea class="flex flex-row items-center h-[300px] w-[300px] rounded-md border p-4">
       <FuturePricesD3 prices={pricesToday} carChargeTimespans={chargeTimespans} />
   </ScrollArea>
@@ -39,7 +40,7 @@
 {/if}
 
 {#if pricesTomorrow.length > 0}
-  <Label>{pricesToday[0].start.toDateString()}</Label>
+  <Label>{pricesToday[0].start.toLocaleDateString()}</Label>
   <ScrollArea class="flex flex-row items-center h-[300px] w-[300px] rounded-md border p-4">
       <FuturePricesD3 prices={pricesTomorrow} carChargeTimespans={chargeTimespans} />
   </ScrollArea>
