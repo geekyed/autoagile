@@ -3,9 +3,8 @@
 
   const { prices, carChargeTimespans }: { prices: Price[]; carChargeTimespans: AndersenChargeTimespan[] } = $props();
 
-  const width = 350;
-  const rowHeight = 25;
-  const rowSpacing = 2;
+  const width = 574;
+  const rowHeight = 40;
   const barWidth = 5;
 
   function getColor(value: number): string {
@@ -26,7 +25,7 @@
 
     const sorted = [...prices].sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
 
-    const totalHeight = sorted.length * (rowHeight + rowSpacing);
+    const totalHeight = sorted.length * rowHeight;
 
     const svg = d3.select(svgEl)
       .attr("width", width)
@@ -41,7 +40,7 @@
       .enter()
       .append("g")
       .attr("class", "cell")
-      .attr("transform", (_, i) => `translate(0,${i * (rowHeight + rowSpacing)})`);
+      .attr("transform", (_, i) => `translate(0,${i * rowHeight})`);
 
     cells.each(function (d) {
       const g = d3.select(this);
@@ -53,8 +52,6 @@
         .attr("width", width)
         .attr("height", rowHeight)
         .attr("fill", getColor(d.price))
-        .attr("stroke", "#fff")
-        .attr("stroke-width", 1);
 
       const priceStart = d.start.getTime();
       const priceEnd = d.end.getTime();
@@ -95,7 +92,7 @@
       // Price label (CENTER)
       g.append("text")
         .text(`${d.price.toFixed(1)}p`)
-        .attr("x", width / 2)
+        .attr("x", width-30)
         .attr("y", rowHeight / 2 + 5)
         .attr("text-anchor", "middle")
         .attr("font-size", "14px")
