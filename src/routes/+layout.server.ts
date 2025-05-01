@@ -1,4 +1,4 @@
-import { getOrCreateUserProfile } from "../lib/auth";
+import { getOrCreateUserProfile } from "../lib/data/auth";
 import type { LayoutServerLoad } from "./$types";
 
 export const load: LayoutServerLoad = async ({ locals, cookies }) => {

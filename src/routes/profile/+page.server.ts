@@ -1,10 +1,10 @@
 import { error } from "@sveltejs/kit";
-import { getOrCreateUserProfile } from "../../lib/auth";
+import { getOrCreateUserProfile } from "../../lib/data/auth";
 import { zfd } from "zod-form-data";
 import { db } from "../../lib/db";
 import { profileTable } from "../../lib/db/schema";
 import { eq } from "drizzle-orm";
-import { getTariffCode } from "../../lib/octopus";
+import { getTariffCode } from "../../lib/thirdPartyAPIs/octopus";
 
 export const load = async ({ locals }) => {
   console.info("load running");

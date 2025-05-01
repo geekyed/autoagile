@@ -1,11 +1,11 @@
 <script lang='ts'>
   import { enhance } from '$app/forms';
 	import { invalidate } from '$app/navigation';
-	import { Button } from '../lib/components/ui/button';
-	import { Card, CardContent, CardHeader } from '../lib/components/ui/card';
-	import { Input } from '../lib/components/ui/input';
-	import { Label } from '../lib/components/ui/label';
-	import { Slider } from '../lib/components/ui/slider';
+	import { Button } from '../ui/button';
+	import { Card, CardContent, CardHeader } from '../ui/card';
+	import { Input } from '../ui/input';
+	import { Label } from '../ui/label';
+	import { Slider } from '../ui/slider';
 
   interface PropsType {
     carChargingConfig: AndersenChargeConfig | null;
@@ -41,7 +41,7 @@
         } else {
           console.error(result.status, result.type);
           if (result.type === 'error') {
-            alert(JSON.stringify(result.error));
+            alert(result.error.message);
           }
         }
       };

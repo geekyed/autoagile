@@ -41,7 +41,6 @@
             invalidate("/");
           } else {
             console.error(result.status, result.type);
-            alert('Failed to update car charging configuration');
           }
         };
       }}>

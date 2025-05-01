@@ -44,3 +44,29 @@ export const andersenChargeTimespanTable = pgTable(
     averagePrice: doublePrecision("average_price").notNull(),
   },
 );
+
+export const tapoConfigTable = pgTable("tapo_config_table", {
+  userId: uuid("user_id").primaryKey().references(() => profileTable.id)
+    .notNull(),
+  tapoUsername: text("tapo_username").notNull(),
+  tapoPassword: text("tapo_password").notNull(),
+  tapoClientUuid: text("tapo_client_uuid").notNull(),
+});
+
+// we write to this table when we get the device list from tapo.
+export const tapoDeviceTable = pgTable("tapo_device_table", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  alias: text("alias").notNull(),
+  userId: uuid("user_id").references(() => tapoConfigTable.userId).notNull(),
+});
+
+export const smartDeviceScheduleTable = pgTable("smart_device_schedule_table", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  deviceType: text("device_type").notNull(),
+  deviceId: uuid("device_id").notNull(),
+  executionTime: timestamp("execution_time", {
+    precision: 6,
+    withTimezone: true,
+  }),
+  toState: text("to_state").notNull(),
+});

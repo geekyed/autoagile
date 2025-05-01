@@ -2,11 +2,12 @@ import { error } from "@sveltejs/kit";
 import {
   createNewChargeTimespans,
   getCarChargeTimespan,
-} from "../lib/carChargeTimespan";
-import { getOrCreateCarConfig } from "../lib/carConfig";
-import { getPrices } from "../lib/prices";
+} from "../lib/data/carChargeTimespan";
+import { getOrCreateCarConfig } from "../lib/data/carConfig";
+
 import type { PageServerLoad } from "./$types";
 import { zfd } from "zod-form-data";
+import { getPrices } from "../lib/data/prices";
 
 export const load: PageServerLoad = async ({ locals }) => {
   const { session } = await locals.safeGetSession();

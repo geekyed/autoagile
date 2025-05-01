@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
-import { db } from "../db";
-import { profileTable } from "../db/schema";
+import { db } from "../../db";
+import { profileTable } from "../../db/schema";
 import { error } from "@sveltejs/kit";
 
 export const getOrCreateUserProfile = async (locals: App.Locals) => {

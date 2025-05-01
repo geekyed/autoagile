@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
-import { db } from "../db";
-import { pricesTable, profileTable } from "../db/schema";
+import { pricesTable, profileTable } from "../../db/schema";
+import { db } from "../../db";
 
 export const getPrices = async (locals: App.Locals): Promise<Price[]> => {
   const { user } = await locals.safeGetSession();

@@ -1,9 +1,12 @@
 import { eq } from "drizzle-orm";
-import { db } from "../db";
-import { andersenChargeTimespanTable, andersenConfigTable } from "../db/schema";
+import { db } from "../../db";
+import {
+  andersenChargeTimespanTable,
+  andersenConfigTable,
+} from "../../db/schema";
 import { getOrCreateCarConfig } from "../carConfig";
-import { getPrices } from "../prices";
 import { error } from "@sveltejs/kit";
+import { getPrices } from "../prices";
 
 export const getCarChargeTimespan = async (
   locals: App.Locals,

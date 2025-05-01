@@ -1,8 +1,8 @@
 <script lang='ts'>
 	import Label from '../lib/components/ui/label/label.svelte';
 	import { ScrollArea } from '../lib/components/ui/scroll-area';
-	import CreateCarCharge from './createCarCharge.svelte';
-	import FuturePricesD3 from './futurePricesD3.svelte';
+	import CreateCarCharge from '../lib/components/custom/createCarCharge.svelte';
+	import FuturePricesD3 from '../lib/components/custom/futurePricesD3.svelte';
 
   const { data } = $props()
   const {userProfile, prices, carChargeTimespans, carChargeConfig} = data;
@@ -17,12 +17,6 @@
   const pricesToday = prices.filter((price) => price.start.getDay() === today.getDay());
   const pricesTomorrow = prices.filter((price) => price.start.getDay() === tomorrow.getDay());
 
-  console.log(pricesToday);
-  console.log(carChargeTimespans);
-
-  $effect(() => {
-    console.log('chargeTimespans changed!!', chargeTimespans);
-  });
 </script>
 
 
@@ -31,7 +25,7 @@
 {#if pricesToday.length > 0}
   <CreateCarCharge carChargingConfig={carChargeConfig} bind:carChargeTimespans={chargeTimespans}/>
   <Label>{pricesToday[0].start.toLocaleDateString()}</Label>
-  <ScrollArea class="flex flex-row items-center h-[300px] w-[300px] rounded-md border p-4">
+  <ScrollArea class="flex flex-row items-center h-[300px] w-[300px]">
       <FuturePricesD3 prices={pricesToday} carChargeTimespans={chargeTimespans} />
   </ScrollArea>
 {:else}
@@ -40,7 +34,7 @@
 
 {#if pricesTomorrow.length > 0}
   <Label>{pricesToday[0].start.toLocaleDateString()}</Label>
-  <ScrollArea class="flex flex-row items-center h-[300px] w-[300px] rounded-md border p-4">
+  <ScrollArea class="flex flex-row items-center h-[300px] w-[300px]">
       <FuturePricesD3 prices={pricesTomorrow} carChargeTimespans={chargeTimespans} />
   </ScrollArea>
 {/if}

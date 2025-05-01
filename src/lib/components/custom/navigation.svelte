@@ -1,5 +1,5 @@
 <script lang="ts">
-  const { userProfile } = $props();
+
 </script>
 
 <div class="flex flex-col items-center justify-center">
@@ -10,7 +10,7 @@
           <span class="flex-auto">Home</span>
         </a>
       </li>
-{#if userProfile}
+
       <li>
         <a href="/profile">
           <span class="flex-auto">Profile</span>
@@ -21,12 +21,6 @@
           <span class="flex-auto">Car Charge</span>
         </a>
       </li>
-      <li>
-        <a href="/smart-devices">
-          <span class="flex-auto">Smart Devices</span>
-        </a>
-      </li>
-{/if}
     </ul>
   </nav>
 </div>
