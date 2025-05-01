@@ -1,6 +1,11 @@
 <script lang="ts">
-  import { page } from '$app/stores';
-  $: currentPath = $page.url.pathname;
+import { page } from '$app/state';
+
+let path = $state(page.url.pathname);
+
+$effect(() => {
+  path = page.url.pathname;
+});
 </script>
 
 <nav class="w-full">
@@ -11,7 +16,7 @@
         class="group relative pb-1 text-gray-700 dark:text-gray-300 hover:text-purple-700 transition-colors duration-300"
       >
         Home
-        {#if currentPath === '/'}
+        {#if path === '/'}
           <span class="absolute left-0 bottom-0 w-full h-[2px] bg-[rgb(109,40,217)] transition-all duration-300"></span>
         {/if}
         <span
@@ -26,7 +31,7 @@
         class="group relative pb-1 text-gray-700 dark:text-gray-300 hover:text-purple-700 transition-colors duration-300"
       >
         Profile
-        {#if currentPath === '/profile'}
+        {#if path === '/profile'}
           <span class="absolute left-0 bottom-0 w-full h-[2px] bg-[rgb(109,40,217)] transition-all duration-300"></span>
         {/if}
         <span
@@ -41,7 +46,7 @@
         class="group relative pb-1 text-gray-700 dark:text-gray-300 hover:text-purple-700 transition-colors duration-300"
       >
         Car Charge
-        {#if currentPath === '/car-charging'}
+        {#if path === '/car-charging'}
           <span class="absolute left-0 bottom-0 w-full h-[2px] bg-[rgb(109,40,217)] transition-all duration-300"></span>
         {/if}
         <span
