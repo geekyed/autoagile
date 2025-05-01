@@ -9,6 +9,10 @@ import {
 } from "$env/static/public";
 import type { LayoutLoad } from "./$types";
 
+import { injectSpeedInsights } from "@vercel/speed-insights/sveltekit";
+
+injectSpeedInsights();
+
 export const load: LayoutLoad = async ({ data, depends, fetch }) => {
   /**
    * Declare a dependency so the layout can be invalidated, for example, on
