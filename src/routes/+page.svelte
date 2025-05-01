@@ -16,7 +16,6 @@
 
   const pricesToday = prices.filter((price) => price.start.getDay() === today.getDay());
   const pricesTomorrow = prices.filter((price) => price.start.getDay() === tomorrow.getDay());
-
 </script>
 
 
@@ -24,8 +23,8 @@
 <div class='flex flex-col items-center gap-5'>
 {#if pricesToday.length > 0}
   <CreateCarCharge carChargingConfig={carChargeConfig} bind:carChargeTimespans={chargeTimespans}/>
-  <Label>{pricesToday[0].start.toLocaleDateString()}</Label>
-  <ScrollArea class="flex flex-row items-center h-[300px] w-[300px]">
+  <Label>{pricesToday[0].start.toDateString()}</Label>
+  <ScrollArea class="flex flex-row items-center h-full max-h-300px">
       <FuturePricesD3 prices={pricesToday} carChargeTimespans={chargeTimespans} />
   </ScrollArea>
 {:else}
@@ -33,8 +32,8 @@
 {/if}
 
 {#if pricesTomorrow.length > 0}
-  <Label>{pricesToday[0].start.toLocaleDateString()}</Label>
-  <ScrollArea class="flex flex-row items-center h-[300px] w-[300px]">
+  <Label>{pricesTomorrow[0].start.toDateString()}</Label>
+  <ScrollArea class="flex flex-row items-center h-full max-h-300px">
       <FuturePricesD3 prices={pricesTomorrow} carChargeTimespans={chargeTimespans} />
   </ScrollArea>
 {/if}

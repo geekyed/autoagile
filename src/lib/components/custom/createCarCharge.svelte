@@ -30,7 +30,7 @@
     Setup next charge
   </CardHeader>
   <CardContent>
-    <form class='flex flex-col gap-2' method="post" use:enhance={({formData}) => {
+    <form class='flex flex-col gap-5' method="post" use:enhance={({formData}) => {
       formData.set('chargePercent', chargePercent.toString());
       formData.set('endTime', endTime);
       return ({result}) => {
