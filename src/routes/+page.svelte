@@ -23,7 +23,7 @@
 <div class='flex flex-col items-center gap-5'>
 {#if pricesToday.length > 0}
   <CreateCarCharge carChargingConfig={carChargeConfig} bind:carChargeTimespans={chargeTimespans}/>
-  <Label>{pricesToday[0].start.toLocaleDateString()}</Label>
+  <Label>{today.toLocaleDateString()}</Label>
   <ScrollArea>
     <div class="max-h-[20rem] max-w-[20rem]">
             <FuturePricesD3 prices={pricesToday} carChargeTimespans={chargeTimespans} />
@@ -34,7 +34,7 @@
 {/if}
 
 {#if pricesTomorrow.length > 0}
-  <Label>{pricesTomorrow[0].start.toLocaleDateString()}</Label>
+  <Label>{tomorrow.toLocaleDateString()}</Label>
   <ScrollArea>
     <div class="max-h-[20rem] max-w-[20rem]">
             <FuturePricesD3 prices={pricesTomorrow} carChargeTimespans={chargeTimespans} />
