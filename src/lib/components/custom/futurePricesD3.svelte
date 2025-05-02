@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { BatteryCharging } from "@lucide/svelte";
 	import { Card, CardContent } from "../ui/card";
 	import CardHeader from "../ui/card/card-header.svelte";
 	import { Label } from "../ui/label";
@@ -24,26 +25,25 @@
   }
 </script>
 
-<Card class='w-full max-w-xl flex flex-col gap-2x items-center min-h-fit'>
+<Card class='w-full max-w-xl flex flex-col items-center min-h-fit'>
   <CardHeader>
     {prices[0].start.toLocaleDateString()}
   </CardHeader>
   <CardContent>
-    <ScrollArea class='min-w-[34rem]'>
-      <div class="w-full max-w-[34rem] max-h-72">
+    <ScrollArea>
+      <div class="flex flex-col justify-centre gap-1 w-[24rem] max-w-[34rem] max-h-72">
         {#each prices as price}
           <div
-            class="flex items-center border-spacing-2 h-8 border rounded text-sm relative overflow-hidden px-2"
+            class="flex gap-x-2 min-h-8 justify-center items-center"
             style="background-color: {getColor(price.price)}"
           >
             <span class="text-gray-800 font-medium flex-grow">
-              {price.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+              {price.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', })}
             </span>
-            <span class="font-semibold text-gray-900">{price.price.toFixed(1)}p</span>
-
             {#if isCharging(price.start, price.end)}
-              <div class="absolute top-0 bottom-0 right-14 w-1 bg-black/40 rounded-sm"></div>
+              <BatteryCharging class="h-[1.4rem] w-[1.4rem] rotate-0 scale-100 transition-all"/>
             {/if}
+            <span class="flex-grow-0 font-semibold text-gray-900">{price.price.toFixed(1)}p</span>
           </div>
         {/each}
       </div>
