@@ -30,13 +30,13 @@
   </CardHeader>
   <CardContent>
     <ScrollArea class='min-w-[34rem]'>
-      <div class="w-full max-w-4xl max-h-72">
+      <div class="w-full max-w-[34rem] max-h-72">
         {#each prices as price}
           <div
-            class="flex items-center border-spacing-2 border justify-between p-2 rounded text-sm relative overflow-hidden"
+            class="flex items-center border-spacing-2 h-8 border rounded text-sm relative overflow-hidden px-2"
             style="background-color: {getColor(price.price)}"
           >
-            <span class="text-gray-800 font-medium">
+            <span class="text-gray-800 font-medium flex-grow">
               {price.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
             </span>
             <span class="font-semibold text-gray-900">{price.price.toFixed(1)}p</span>
