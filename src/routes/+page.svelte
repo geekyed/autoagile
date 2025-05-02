@@ -34,7 +34,7 @@
 {/if}
 
 {#if pricesTomorrow.length > 0}
-  <Label>{pricesToday[0].start.toLocaleDateString()}</Label>
+  <Label>{pricesTomorrow[0].start.toLocaleDateString()}</Label>
   <ScrollArea>
     <div class="max-h-[20rem] max-w-[20rem]">
             <FuturePricesD3 prices={pricesTomorrow} carChargeTimespans={chargeTimespans} />
