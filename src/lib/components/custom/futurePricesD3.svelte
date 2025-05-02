@@ -1,115 +1,61 @@
 <script lang="ts">
-  import * as d3 from "d3";
+	import { Card, CardContent } from "../ui/card";
+	import CardHeader from "../ui/card/card-header.svelte";
+	import { Label } from "../ui/label";
+	import { ScrollArea } from "../ui/scroll-area";
 
   const { prices, carChargeTimespans }: { prices: Price[]; carChargeTimespans: AndersenChargeTimespan[] } = $props();
 
-  const width = 300;
-  const rowHeight = 30;
-  const barWidth = 5;
+  const getColor = (value: number): string => {
+    if (value === 999) return "#ffffff"; 
+    if (value < 0) return "#c084fc";
+    if (value < 5) return "#60a5fa"; 
+    if (value < 10) return "#4adec5";
+    if (value < 15) return "#4ade5b";
+    if (value < 20) return "#facc15";
+    if (value < 25) return "#f97316";
+     return "#f43f5e";
+  }
 
-function getColor(value: number): string {
-  if (value === 999) return "#ffffff";          // Missing data
-  if (value < 0) return "#c084fc";              // Soft purple
-  if (value < 5) return "#60a5fa";              // Blue (cool)
-  if (value < 10) return "#4adec5";             // Emerald green
-  if (value < 15) return "#4ade5b";             // Bold yellow
-  if (value < 20) return "#facc15";             // Orange
-  if (value < 25) return "#f97316";             // Rose red
-  return "#f43f5e";                             // Core purple
-}
-
-  let svgEl: SVGSVGElement;
-
-  $effect(() => {
-    if (!svgEl || prices.length === 0) return;
-
-    const sorted = [...prices].sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
-
-    const totalHeight = sorted.length * rowHeight;
-
-    const svg = d3.select(svgEl)
-      .attr("width", width)
-      .attr("height", totalHeight);
-
-    svg.selectAll("*").remove();
-
-    const group = svg.append("g").attr("transform", "translate(0,0)");
-
-    const cells = group.selectAll("g.cell")
-      .data(sorted)
-      .enter()
-      .append("g")
-      .attr("class", "cell")
-      .attr("transform", (_, i) => `translate(0,${i * rowHeight})`);
-
-    cells.each(function (d) {
-      const g = d3.select(this);
-
-      // Background rectangle
-      g.append("rect")
-        .attr("x", 0)
-        .attr("y", 0)
-        .attr("width", width)
-        .attr("height", rowHeight)
-        .attr("fill", getColor(d.price))
-
-      const priceStart = d.start.getTime();
-      const priceEnd = d.end.getTime();
-
-      const isCharging = carChargeTimespans.some((span) => {
-        return span.startTime.getTime() <= priceStart && span.endTime.getTime() >= priceEnd;
-      });
-
-      function darkenColor(hex: string, factor: number = 0.7): string {
-        const c = d3.color(hex);
-        if (c && "r" in c && "g" in c && "b" in c) {
-          const { r, g, b } = c;
-          return d3.rgb(r * factor, g * factor, b * factor).formatHex();
-        }
-        return hex; // fallback if invalid color
-      }
-
-      if (isCharging) {
-        g.append("rect")
-          .attr("x", 240)
-          .attr("y", 0)
-          .attr("width", barWidth)
-          .attr("height", rowHeight)
-          .attr("fill", darkenColor(getColor(d.price)))
-      }
-
-
-      // Time label (LEFT)
-      const timeText = new Date(d.start).toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
-      g.append("text")
-        .text(timeText)
-        .attr("x", 8)
-        .attr("y", rowHeight / 2 + 5)
-        .attr("text-anchor", "start")
-        .attr("font-size", "12px")
-        .attr("fill", "#333");
-
-      // Price label (CENTER)
-      g.append("text")
-        .text(`${d.price.toFixed(1)}p`)
-        .attr("x", width-30)
-        .attr("y", rowHeight / 2 + 5)
-        .attr("text-anchor", "middle")
-        .attr("font-size", "14px")
-        .attr("font-weight", "bold")
-        .attr("fill", "#333");
-    });
-  });
+  const isCharging = (start: Date, end: Date) => {
+    return carChargeTimespans.some(span =>
+      span.startTime <= start && span.endTime >= end
+    );
+  }
 </script>
 
-<div style="text-align: center;">
-  <svg bind:this={svgEl}></svg>
-</div>
+<Card class='w-full max-w-xl flex flex-col gap-2x items-center min-h-fit'>
+  <CardHeader>
+    {prices[0].start.toLocaleDateString()}
+  </CardHeader>
+  <CardContent>
+    <ScrollArea class='min-w-[34rem]'>
+      <div class="w-full max-w-4xl max-h-72">
+        {#each prices as price}
+          <div
+            class="flex items-center border-spacing-2 border justify-between p-2 rounded text-sm relative overflow-hidden"
+            style="background-color: {getColor(price.price)}"
+          >
+            <span class="text-gray-800 font-medium">
+              {price.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+            </span>
+            <span class="font-semibold text-gray-900">{price.price.toFixed(1)}p</span>
+
+            {#if isCharging(price.start, price.end)}
+              <div class="absolute top-0 bottom-0 right-14 w-1 bg-black/40 rounded-sm"></div>
+            {/if}
+          </div>
+        {/each}
+      </div>
+    </ScrollArea>
+  </CardContent>
+</Card>
+
+
 
 <style>
-  svg {
-    display: block;
-    margin: auto;
-    background: #f8f8f8;
+  /* Optional extra styling for mobile & aesthetics */
+  div::-webkit-scrollbar {
+    display: none;
   }
 </style>

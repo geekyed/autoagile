@@ -27,7 +27,7 @@
 {#if carChargingConfig}
 <Card class='w-full max-w-xl'>
   <CardHeader>
-    Setup next charge
+    Setup next car charge
   </CardHeader>
   <CardContent>
     <form class='flex flex-col gap-5' method="post" use:enhance={({formData}) => {
