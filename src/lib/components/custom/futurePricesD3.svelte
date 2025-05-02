@@ -3,20 +3,20 @@
 
   const { prices, carChargeTimespans }: { prices: Price[]; carChargeTimespans: AndersenChargeTimespan[] } = $props();
 
-  const width = 574;
-  const rowHeight = 40;
+  const width = 300;
+  const rowHeight = 30;
   const barWidth = 5;
 
-  function getColor(value: number): string {
-    if (value === 999) return "#ffffff";
-    if (value < 0) return "#d1b3ff";
-    if (value < 5) return "#a8c6f1";
-    if (value < 10) return "#a0d8d1";
-    if (value < 15) return "#d3f0d7";
-    if (value < 20) return "#ffffe0";
-    if (value < 25) return "#ffd8b1";
-    return "#ffb6b6";
-  }
+function getColor(value: number): string {
+  if (value === 999) return "#ffffff";          // Missing data
+  if (value < 0) return "#c084fc";              // Soft purple
+  if (value < 5) return "#60a5fa";              // Blue (cool)
+  if (value < 10) return "#4adec5";             // Emerald green
+  if (value < 15) return "#4ade5b";             // Bold yellow
+  if (value < 20) return "#facc15";             // Orange
+  if (value < 25) return "#f97316";             // Rose red
+  return "#f43f5e";                             // Core purple
+}
 
   let svgEl: SVGSVGElement;
 

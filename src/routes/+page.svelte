@@ -24,8 +24,10 @@
 {#if pricesToday.length > 0}
   <CreateCarCharge carChargingConfig={carChargeConfig} bind:carChargeTimespans={chargeTimespans}/>
   <Label>{pricesToday[0].start.toLocaleDateString()}</Label>
-  <ScrollArea class="flex flex-row items-center h-[300px] w-[574px]">
-      <FuturePricesD3 prices={pricesToday} carChargeTimespans={chargeTimespans} />
+  <ScrollArea>
+    <div class="max-h-[20rem] max-w-[20rem]">
+            <FuturePricesD3 prices={pricesToday} carChargeTimespans={chargeTimespans} />
+    </div>
   </ScrollArea>
 {:else}
   <h1 class='text-2xl font-bold'>No prices for today</h1>
@@ -33,8 +35,10 @@
 
 {#if pricesTomorrow.length > 0}
   <Label>{pricesToday[0].start.toLocaleDateString()}</Label>
-  <ScrollArea class="flex flex-row items-center h-[300px] w-[574px]">
-      <FuturePricesD3 prices={pricesTomorrow} carChargeTimespans={chargeTimespans} />
+  <ScrollArea>
+    <div class="max-h-[20rem] max-w-[20rem]">
+            <FuturePricesD3 prices={pricesTomorrow} carChargeTimespans={chargeTimespans} />
+    </div>
   </ScrollArea>
 {/if}
 </div>
