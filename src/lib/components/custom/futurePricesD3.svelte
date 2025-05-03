@@ -25,28 +25,24 @@
   }
 </script>
 
-<Card class='w-full max-w-xl flex flex-col items-center min-h-fit'>
-  <CardContent>
-    <ScrollArea>
-      <div class="flex flex-col justify-centre gap-1 w-[22rem] max-w-[32rem] max-h-96">
-        {#each prices as price}
-          <div
-            class="flex gap-2 min-h-10 justify-center p-2"
-            style="background-color: {getColor(price.price)}"
-          >
-            <div class="text-gray-800 font-medium flex-grow">
-              {price.start.toLocaleString([], { hour: '2-digit', minute: '2-digit', day: '2-digit', month: 'short'})}
-            </div>
-            {#if isCharging(price.start, price.end)}
-              <BatteryCharging class="h-[1.4rem] w-[1.4rem] rotate-0 scale-100 transition-all"/>
-            {/if}
-            <div class="flex-grow-0 font-semibold text-gray-900">{price.price.toFixed(1)}p</div>
-          </div>
-        {/each}
+<ScrollArea>
+  <div class="flex flex-col max-h-96 justify-centre gap-1 max-w-[22rem] md:max-w-[36rem] w-[96rem]">
+    {#each prices as price}
+      <div
+        class="flex gap-2 min-h-10 justify-center p-2"
+        style="background-color: {getColor(price.price)}"
+      >
+        <div class="text-gray-800 font-medium flex-grow">
+          {price.start.toLocaleString([], { hour: '2-digit', minute: '2-digit', day: '2-digit', month: 'short'})}
+        </div>
+        {#if isCharging(price.start, price.end)}
+          <BatteryCharging class="h-[1.4rem] w-[1.4rem] rotate-0 scale-100 transition-all"/>
+        {/if}
+        <div class="flex-grow-0 font-semibold text-gray-900">{price.price.toFixed(1)}p</div>
       </div>
-    </ScrollArea>
-  </CardContent>
-</Card>
+    {/each}
+  </div>
+</ScrollArea>
 
 
 
