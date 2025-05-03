@@ -2,7 +2,7 @@
   import { enhance } from '$app/forms';
 	import { invalidate } from '$app/navigation';
 	import { Button } from '../ui/button';
-	import { Card, CardContent, CardHeader } from '../ui/card';
+	import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui/card';
 	import { Input } from '../ui/input';
 	import { Label } from '../ui/label';
 	import { Slider } from '../ui/slider';
@@ -14,20 +14,30 @@
 
   let { carChargingConfig, carChargeTimespans = $bindable() }: PropsType = $props()
 
-  let averagePrice = $derived(() => {
-    if (carChargeTimespans.length === 0) return 0;
-    const totalPrice = carChargeTimespans.reduce((acc, timespan) => acc + timespan.averagePrice, 0);
-    return totalPrice / carChargeTimespans.length;
+  const msIn30m = 1000 * 60 * 30;
+
+  let { averagePrice, number30mSlots} = $derived.by(() => {
+    if (carChargeTimespans.length === 0) return { averagePrice: 0, number30mSlots: 0};
+    return carChargeTimespans.reduce<{ averagePrice: number, number30mSlots: number}>((acc, timespan) => {
+      const no30mSlotsInSpan = (timespan.endTime.getTime() - timespan.startTime.getTime()) / msIn30m;
+      const newNo30mSlots = acc.number30mSlots + no30mSlotsInSpan
+      return {
+        averagePrice: ((acc.averagePrice * acc.number30mSlots) + (timespan.averagePrice * no30mSlotsInSpan)) / newNo30mSlots,
+        number30mSlots: newNo30mSlots
+    }},{
+      averagePrice: 0,
+      number30mSlots: 0
+    });
   });
 
   let chargePercent = $state(20);
   let endTime = $state('00:00');
-
 </script>
 {#if carChargingConfig}
 <Card class='w-full max-w-xl'>
   <CardHeader>
-    Setup next car charge
+    <CardTitle>Car Charge</CardTitle>
+    <CardDescription>Charge set for {number30mSlots/2}hrs at {Math.floor(100* averagePrice)/100}p</CardDescription>
   </CardHeader>
   <CardContent>
     <form class='flex flex-col gap-5' method="post" use:enhance={({formData}) => {
@@ -37,6 +47,9 @@
         if (result.type === 'success') {
           console.log('Success', result?.data?.timespans);
           carChargeTimespans = (result?.data?.timespans as AndersenChargeTimespan[]);
+          if(carChargeTimespans.length === 0) {
+            alert('Deleted all charging times.')
+          }
           invalidate('/');
         } else {
           console.error(result.status, result.type);
@@ -59,10 +72,6 @@
       </div>
       <div class='flex flex-row gap-2'>
         <Button type='submit'>Update</Button>
-        <div class="flex flex-col items-center gap-2">
-          <Label>Average Price</Label>
-          <Label>{Math.floor(averagePrice()*10)/10}p</Label>
-        </div>
       </div>
     </form>
   </CardContent>

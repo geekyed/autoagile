@@ -61,6 +61,10 @@ export const createNewChargeTimespans = async (
     error(500, newTimespans.error);
   }
 
+  if (newTimespans!.chargeTimespans!.length === 0) {
+    return [];
+  }
+
   await db.insert(andersenChargeTimespanTable).values(
     newTimespans.chargeTimespans!.map((timespan) => ({
       userId: timespan.userId,
@@ -88,6 +92,8 @@ const generateCarChargeTimespans = (
     chargeConfig.chargeRate,
     percentCharge,
   );
+
+  if (slots === 0) return { error: undefined, chargeTimespans: [] };
 
   const availablePrices = filterPrices(prices, endTime).sort((a, b) =>
     a.price - b.price
