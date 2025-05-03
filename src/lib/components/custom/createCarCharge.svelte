@@ -71,11 +71,11 @@
           <Label>{chargePercent}%</Label>
         </div>
       </div>
-      <div class='flex flex-col gap-2'>
-        <Label>Charge by time</Label>
-        <Input bind:value={endTime} />
-      </div>
-      <div class='flex flex-row gap-2'>
+      <div class='flex flex-row gap-5 items-end'>
+        <div class='flex flex-col gap-2'>
+          <Label>Charge by time</Label>
+          <Input type='time' bind:value={endTime} />
+        </div>
         <Button type='submit'>Create charge</Button>
       </div>
     </form>

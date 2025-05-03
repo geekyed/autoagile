@@ -12,7 +12,7 @@
 {#if userProfile}
 <div class='flex flex-col items-center gap-5'>
 {#if prices.length > 0}
-<div class='flex flex-col flex-grow gap-5'>
+<div class='flex flex-col flex-grow gap-5 justify-center items-center'>
   <CreateCarCharge carChargingConfig={carChargeConfig} bind:carChargeTimespans={chargeTimespans}/>
   <FuturePricesD3 {prices} carChargeTimespans={chargeTimespans} />
 </div>

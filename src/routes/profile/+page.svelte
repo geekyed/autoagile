@@ -56,7 +56,7 @@
           </div>
           <div>    
             <Label>Octopus API Key</Label>
-            <Input bind:value={octopusAPIKey} />
+            <Input type='password' bind:value={octopusAPIKey} />
           </div>
           <div>
             <Label>Octopus Tariff Code</Label>
