@@ -32,12 +32,17 @@
 
   let chargePercent = $state(20);
   let endTime = $state('00:00');
+
+  let chargeText = $derived.by(() => {
+    if (carChargeTimespans.length === 0) return 'No charge set';
+    return `Charge set for ${number30mSlots/2}hrs at ${Math.floor(100* averagePrice)/100}p`
+  });
 </script>
 {#if carChargingConfig}
 <Card class='w-full max-w-xl'>
   <CardHeader>
     <CardTitle>Car Charge</CardTitle>
-    <CardDescription>Charge set for {number30mSlots/2}hrs at {Math.floor(100* averagePrice)/100}p</CardDescription>
+    <CardDescription>{chargeText}</CardDescription>
   </CardHeader>
   <CardContent>
     <form class='flex flex-col gap-5' method="post" use:enhance={({formData}) => {
@@ -71,7 +76,7 @@
         <Input bind:value={endTime} />
       </div>
       <div class='flex flex-row gap-2'>
-        <Button type='submit'>Update</Button>
+        <Button type='submit'>Create charge</Button>
       </div>
     </form>
   </CardContent>
