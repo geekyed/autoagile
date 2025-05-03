@@ -1,8 +1,5 @@
 <script lang="ts">
 	import { BatteryCharging } from "@lucide/svelte";
-	import { Card, CardContent } from "../ui/card";
-	import CardHeader from "../ui/card/card-header.svelte";
-	import { Label } from "../ui/label";
 	import { ScrollArea } from "../ui/scroll-area";
 
   const { prices, carChargeTimespans }: { prices: Price[]; carChargeTimespans: AndersenChargeTimespan[] } = $props();
@@ -29,7 +26,7 @@
   <div class="flex flex-col max-h-96 justify-centre gap-1 max-w-[22rem] md:max-w-[36rem] w-[96rem]">
     {#each prices as price}
       <div
-        class="flex gap-2 min-h-10 justify-center p-2"
+        class="flex gap-2 min-h-8 justify-center p-2"
         style="background-color: {getColor(price.price)}"
       >
         <div class="text-gray-800 font-medium flex-grow">

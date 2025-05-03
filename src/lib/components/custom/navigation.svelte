@@ -45,7 +45,7 @@ $effect(() => {
         href="/car-charging"
         class="group relative pb-1 text-gray-700 dark:text-gray-300 hover:text-purple-700 transition-colors duration-300"
       >
-        Car Charge
+        Car Config
         {#if path === '/car-charging'}
           <span class="absolute left-0 bottom-0 w-full h-[2px] bg-[rgb(109,40,217)] transition-all duration-300"></span>
         {/if}
