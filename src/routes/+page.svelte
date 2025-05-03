@@ -8,27 +8,16 @@
 
   let chargeTimespans: AndersenChargeTimespan[] = $state([])
   chargeTimespans = [...carChargeTimespans];
-
-  const today = new Date();
-  const tomorrow = new Date();
-  tomorrow.setDate(today.getDate() + 1);
-
-  const pricesToday = prices.filter((price) => price.start.getDay() === today.getDay());
-  const pricesTomorrow = prices.filter((price) => price.start.getDay() === tomorrow.getDay());
 </script>
 
 
 {#if userProfile}
 <div class='flex flex-col items-center gap-5'>
-{#if pricesToday.length > 0}
+{#if prices.length > 0}
   <CreateCarCharge carChargingConfig={carChargeConfig} bind:carChargeTimespans={chargeTimespans}/>
-  <FuturePricesD3 prices={pricesToday} carChargeTimespans={chargeTimespans} />
+  <FuturePricesD3 {prices} carChargeTimespans={chargeTimespans} />
 {:else}
-  <h1 class='text-2xl font-bold'>No prices for today</h1>
-{/if}
-
-{#if pricesTomorrow.length > 0}
-  <FuturePricesD3 prices={pricesTomorrow} carChargeTimespans={chargeTimespans} />
+  <h1 class='text-2xl font-bold'>No prices found</h1>
 {/if}
 </div>
 {:else}
