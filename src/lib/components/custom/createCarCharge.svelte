@@ -33,6 +33,24 @@
   let chargePercent = $state(20);
   let endTime = $state('00:00');
 
+  const getNextDateTime = (toTime: string): Date => {
+    const now = new Date();
+    const [hours, minutes] = toTime.split(':').map(Number);
+
+    const target = new Date(now);
+    target.setHours(hours, minutes, 0, 0);
+
+    if (target <= now) {
+      target.setDate(target.getDate() + 1);
+    }
+    return target;
+  };
+
+  let endDateTime = $derived.by(() => {
+    return getNextDateTime(endTime);
+  });
+  
+
   let chargeText = $derived.by(() => {
     if (carChargeTimespans.length === 0) return 'No charge set';
     return `Charge set for ${number30mSlots/2}hrs at ${Math.floor(100* averagePrice)/100}p`
@@ -47,7 +65,7 @@
   <CardContent>
     <form class='flex flex-col gap-5' method="post" use:enhance={({formData}) => {
       formData.set('chargePercent', chargePercent.toString());
-      formData.set('endTime', endTime);
+      formData.set('endTime', endDateTime.toString());
       return ({result}) => {
         if (result.type === 'success') {
           console.log('Success', result?.data?.timespans);
@@ -73,7 +91,7 @@
       </div>
       <div class='flex flex-row gap-5 items-end'>
         <div class='flex flex-col gap-2'>
-          <Label>Charge by time</Label>
+          <Label>Until</Label>
           <Input type='time' bind:value={endTime} />
         </div>
         <Button type='submit'>Create charge</Button>

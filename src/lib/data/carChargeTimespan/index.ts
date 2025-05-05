@@ -32,7 +32,7 @@ export const getCarChargeTimespan = async (
 
 export const createNewChargeTimespans = async (
   locals: App.Locals,
-  toTime: string,
+  toTime: Date,
   percentCharge: number,
 ) => {
   const { user } = await locals.safeGetSession();
@@ -78,7 +78,7 @@ export const createNewChargeTimespans = async (
 
 const generateCarChargeTimespans = (
   chargeConfig: AndersenChargeConfig,
-  toTime: string,
+  endDateTime: Date,
   percentCharge: number,
   prices: Price[],
 ): {
@@ -86,7 +86,6 @@ const generateCarChargeTimespans = (
   chargeTimespans: AndersenChargeTimespan[] | undefined;
 } => {
   const chargeTimespans: AndersenChargeTimespan[] = [];
-  const endTime = calculateEndTime(toTime);
   const slots = calculateNoSlots(
     chargeConfig.batterySize,
     chargeConfig.chargeRate,
@@ -95,7 +94,7 @@ const generateCarChargeTimespans = (
 
   if (slots === 0) return { error: undefined, chargeTimespans: [] };
 
-  const availablePrices = filterPrices(prices, endTime).sort((a, b) =>
+  const availablePrices = filterPrices(prices, endDateTime).sort((a, b) =>
     a.price - b.price
   );
 
@@ -107,7 +106,7 @@ const generateCarChargeTimespans = (
         startTime: prices.sort((a, b) =>
           a.start.getTime() - b.start.getTime()
         )[0].start,
-        endTime: endTime,
+        endTime: endDateTime,
         averagePrice: 0,
       }],
     };
@@ -148,16 +147,6 @@ const generateCarChargeTimespans = (
     }
   }
   return { chargeTimespans, error: undefined };
-};
-
-const calculateEndTime = (toTime: string) => {
-  const splitTime = toTime.split(":");
-  const date = new Date();
-  date.setHours(parseInt(splitTime[0]));
-  date.setMinutes(parseInt(splitTime[1]));
-  date.setSeconds(0);
-  if (date.getTime() < Date.now()) date.setDate(date.getDate() + 1);
-  return date;
 };
 
 const calculateNoSlots = (

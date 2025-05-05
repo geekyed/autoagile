@@ -55,7 +55,10 @@ export const actions = {
 
     const schema = zfd.formData({
       chargePercent: zfd.numeric(),
-      endTime: zfd.text(),
+      endTime: zfd.text().refine(
+        (val) => !isNaN(Date.parse(val)),
+        { message: "Invalid date/time string" },
+      ),
     });
 
     const { data, error: parseError } = schema.safeParse(
@@ -66,10 +69,13 @@ export const actions = {
       error(400, parseError?.message);
     }
 
+    const endDateTime = new Date(data.endTime);
+
     try {
+      console.log("end date time is: ", data.endTime);
       const timespans = await createNewChargeTimespans(
         locals,
-        data.endTime,
+        endDateTime,
         data.chargePercent,
       );
       console.info("Updated car charging config in database", user?.id, data);
