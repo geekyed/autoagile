@@ -30,7 +30,7 @@
         style="background-color: {getColor(price.price)}"
       >
         <div class="text-gray-800 font-medium flex-grow">
-          {price.start.toLocaleString([], { hour: '2-digit', minute: '2-digit', day: '2-digit', month: 'short'})}
+          {price.start.toLocaleString([], { timeStyle: 'short', hourCycle: 'h12'} )}
         </div>
         {#if isCharging(price.start, price.end)}
           <BatteryCharging class="h-[1.4rem] w-[1.4rem] rotate-0 scale-100 transition-all"/>
