@@ -1,10 +1,10 @@
 <script lang="ts">
 	import '../app.css';
 	import { invalidate } from '$app/navigation';
-	import Navigation from '../lib/components/custom/navigation.svelte';
-	import { Button } from '../lib/components/ui/button';
+	import Navigation from '$lib/components/custom/navigation.svelte';
+	import { Button, buttonVariants } from '$lib/components/ui/button';
 	import { ModeWatcher, toggleMode } from "mode-watcher";
-	import DarkMode from '../lib/components/custom/darkMode.svelte';
+	import DarkMode from '$lib/components/custom/darkMode.svelte';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu'
 	import { BatteryCharging, Github, LogOut, Menu, Moon, Settings, Sun, User } from '@lucide/svelte';
 
@@ -39,23 +39,22 @@
 		</div>
 	{:else}
 		<DropdownMenu.Root>
-			<DropdownMenu.Trigger><Menu/></DropdownMenu.Trigger>
-				<DropdownMenu.Content>
+			<DropdownMenu.Trigger class={buttonVariants({ variant: "outline" })}><Menu/></DropdownMenu.Trigger>
+				<DropdownMenu.Content class='w-72 top-10px'>
 					<DropdownMenu.Group>
-						<DropdownMenu.Separator />
-						<DropdownMenu.Item ><BatteryCharging /><a href='/'>Charge</a></DropdownMenu.Item>
-						<DropdownMenu.Item ><User/><a href='profile'>Profile</a></DropdownMenu.Item>
-						<DropdownMenu.Item ><Settings/><a href='car-charging'>Car Config</a></DropdownMenu.Item>
+						<DropdownMenu.Item><a class='flex flex-row justify-center items-center' href='/'><BatteryCharging class="mr-2 size-4"/> Charge</a></DropdownMenu.Item>
+						<DropdownMenu.Item><a class='flex flex-row justify-center items-center' href='profile'><User class="mr-2 size-4"/> Profile</a></DropdownMenu.Item>
+						<DropdownMenu.Item><a class='flex flex-row justify-center items-center'  href='car-charging'><Settings class="mr-2 size-4"/> Car Config</a></DropdownMenu.Item>
 						<DropdownMenu.Separator />
 					</DropdownMenu.Group>
 				<DropdownMenu.Group>
 				{#if userProfile === null}
 					<DropdownMenu.Item>
-						<a href='/auth/login/github'><Github/>Sign in with GitHub</a>
+						<a class='flex flex-row justify-center items-center' href='/auth/login/github'><Github class="mr-2 size-4"/> Sign in with GitHub</a>
 					</DropdownMenu.Item>	
 				{:else}
 					<DropdownMenu.Item>
-						<LogOut/><a href="/auth/logout">Logout</a>
+						<a class='flex flex-row justify-center items-center' href="/auth/logout"><LogOut class="mr-2 size-4"/> Logout</a>
 					</DropdownMenu.Item>
 				{/if}
 			</DropdownMenu.Group>
