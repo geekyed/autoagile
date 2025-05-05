@@ -20,5 +20,5 @@
 		"editor.defaultFormatter": "denoland.vscode-deno"
 	},
 	"deno.enable": true,
-	"cSpell.words": ["Octomiser", "Timespans"]
+	"cSpell.words": ["Octomiser", "Timespan", "Timespans"]
 }

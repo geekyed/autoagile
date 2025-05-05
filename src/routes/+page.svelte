@@ -1,6 +1,6 @@
 <script lang='ts'>
 	import CreateCarCharge from '../lib/components/custom/createCarCharge.svelte';
-	import FuturePricesD3 from '../lib/components/custom/futurePricesD3.svelte';
+	import FuturePricesVisual from '../lib/components/custom/futurePricesVisual.svelte';
 
   const { data } = $props()
   const {userProfile, prices, carChargeTimespans, carChargeConfig} = data;
@@ -14,7 +14,7 @@
 {#if prices.length > 0}
 <div class='flex flex-col flex-grow gap-5 justify-center items-center'>
   <CreateCarCharge carChargingConfig={carChargeConfig} bind:carChargeTimespans={chargeTimespans}/>
-  <FuturePricesD3 {prices} carChargeTimespans={chargeTimespans} />
+  <FuturePricesVisual {prices} carChargeTimespans={chargeTimespans} />
 </div>
 {:else}
   <h1 class='text-2xl font-bold'>No prices found</h1>
