@@ -7,6 +7,7 @@
 	import DarkMode from '$lib/components/custom/darkMode.svelte';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu'
 	import { BatteryCharging, Github, LogOut, Menu, Moon, Settings, Sun, User } from '@lucide/svelte';
+	import DarkModeInDropdown from '../lib/components/custom/darkModeInDropdown.svelte';
 
 	let { data: propsData, children } = $props();
 	let { session, supabase, userProfile } = $derived(propsData);
@@ -42,19 +43,22 @@
 			<DropdownMenu.Trigger class={buttonVariants({ variant: "outline" })}><Menu/></DropdownMenu.Trigger>
 				<DropdownMenu.Content class='w-72 top-10px'>
 					<DropdownMenu.Group>
-						<DropdownMenu.Item><a class='flex flex-row justify-center items-center' href='/'><BatteryCharging class="mr-2 size-4"/> Charge</a></DropdownMenu.Item>
-						<DropdownMenu.Item><a class='flex flex-row justify-center items-center' href='profile'><User class="mr-2 size-4"/> Profile</a></DropdownMenu.Item>
-						<DropdownMenu.Item><a class='flex flex-row justify-center items-center'  href='car-charging'><Settings class="mr-2 size-4"/> Car Config</a></DropdownMenu.Item>
+						<DropdownMenu.Item><a class='flex flex-row justify-center items-center w-22 h-6' href='/'><BatteryCharging class="mr-2 size-6"/> Charge</a></DropdownMenu.Item>
+						<DropdownMenu.Item><a class='flex flex-row justify-center items-center w-22 h-6' href='profile'><User class="mr-2 size-6"/> Profile</a></DropdownMenu.Item>
+						<DropdownMenu.Item><a class='flex flex-row justify-center items-center w-22 h-6'  href='car-charging'><Settings class="mr-2 size-6"/> Car Config</a></DropdownMenu.Item>
 						<DropdownMenu.Separator />
 					</DropdownMenu.Group>
 				<DropdownMenu.Group>
+					<DropdownMenu.Item>
+						<DarkModeInDropdown />
+					</DropdownMenu.Item>
 				{#if userProfile === null}
 					<DropdownMenu.Item>
-						<a class='flex flex-row justify-center items-center' href='/auth/login/github'><Github class="mr-2 size-4"/> Sign in with GitHub</a>
+						<a class='flex flex-row justify-center items-center w-22 h-6' href='/auth/login/github'><Github class="mr-2 size-6"/> Sign in with GitHub</a>
 					</DropdownMenu.Item>	
 				{:else}
 					<DropdownMenu.Item>
-						<a class='flex flex-row justify-center items-center' href="/auth/logout"><LogOut class="mr-2 size-4"/> Logout</a>
+						<a class='flex flex-row justify-center items-center w-22 h-6' href="/auth/logout"><LogOut class="mr-2 size-6"/> Logout</a>
 					</DropdownMenu.Item>
 				{/if}
 			</DropdownMenu.Group>
