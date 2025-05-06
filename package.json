@@ -48,6 +48,7 @@
 		"@supabase/ssr": "^0.6.1",
 		"@supabase/supabase-js": "^2.49.4",
 		"@vercel/speed-insights": "^1.2.0",
+		"date-fns": "^4.1.0",
 		"drizzle-orm": "^0.42.0",
 		"mode-watcher": "0.5.1",
 		"postgres": "^3.4.5"

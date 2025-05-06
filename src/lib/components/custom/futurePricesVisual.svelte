@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { BatteryCharging } from "@lucide/svelte";
 	import { ScrollArea } from "../ui/scroll-area";
+	import { format } from "date-fns";
 
   const { prices, carChargeTimespans }: { prices: Price[]; carChargeTimespans: AndersenChargeTimespan[] } = $props();
 
@@ -20,6 +21,7 @@
       span.startTime <= start && span.endTime >= end
     );
   }
+
 </script>
 
 <ScrollArea>
@@ -30,7 +32,7 @@
         style="background-color: {getColor(price.price)}"
       >
         <div class="text-gray-800 font-medium flex-grow">
-          {price.start.toLocaleString([], { timeStyle: 'short', hourCycle: 'h12'} )}
+          {format(price.start, 'do hh:mmaaa')}
         </div>
         {#if isCharging(price.start, price.end)}
           <BatteryCharging class="h-[1.4rem] w-[1.4rem] rotate-0 scale-100 transition-all"/>
