@@ -14,10 +14,10 @@
   })
 </script>
 
-<Button variant="ghost" class='flex flex-row justify-center items-center p-0 gap-0 h-6' onclick={toggleMode}>
+<Button variant="link" class='flex flex-row w-full justify-start text-lg' onclick={toggleMode}>
   {#if currentMode=== 'light'}
-    <Moon class="mr-2 size-6"/> Dark
+    <Moon class="mr-2"/> Dark
   {:else}
-    <Sun class="mr-2 size-6"/> Light
+    <Sun class="mr-2"/> Light
   {/if}
 </Button>
