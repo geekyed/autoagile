@@ -35,9 +35,9 @@
           {format(price.start, 'do hh:mmaaa')}
         </div>
         {#if isCharging(price.start, price.end)}
-          <BatteryCharging class="h-[1.4rem] w-[1.4rem] rotate-0 scale-100 transition-all"/>
+          <BatteryCharging class="flex-grow-1 h-[1.4rem] w-[1.4rem] rotate-0 scale-100 transition-all"/>
         {/if}
-        <div class="flex-grow-0 font-semibold text-gray-900">{price.price.toFixed(1)}p</div>
+        <div class="flex-grow-0 w-10 font-semibold text-gray-900">{price.price.toFixed(1)}p</div>
       </div>
     {/each}
   </div>
