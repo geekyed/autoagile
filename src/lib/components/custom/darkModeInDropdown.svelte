@@ -14,7 +14,7 @@
   })
 </script>
 
-<Button variant="link" class='flex flex-row w-full justify-start text-lg' onclick={toggleMode}>
+<Button variant="ghost" class='flex flex-row w-full focus:border-none justify-start text-lg' onclick={toggleMode}>
   {#if currentMode=== 'light'}
     <Moon class="mr-2"/> Dark
   {:else}
