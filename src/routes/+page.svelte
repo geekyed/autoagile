@@ -5,8 +5,17 @@
   const { data } = $props()
   const {userProfile, prices, carChargeTimespans, carChargeConfig} = data;
 
+  let filteredPrices = $derived(prices.filter(price => price.end.getTime() > new Date().getTime()))
+
   let chargeTimespans: AndersenChargeTimespan[] = $state([])
   chargeTimespans = [...carChargeTimespans];
+
+  $effect(() => {
+    setInterval(() => {
+      filteredPrices = prices.filter(price => price.end.getTime() > new Date().getTime())
+    }, 1000)
+  })
+    
 </script>
 
 {#if userProfile}
@@ -14,7 +23,7 @@
 {#if prices.length > 0}
 <div class='flex flex-col flex-grow gap-5 justify-center items-center'>
   <CreateCarCharge carChargingConfig={carChargeConfig} bind:carChargeTimespans={chargeTimespans}/>
-  <FuturePricesVisual {prices} carChargeTimespans={chargeTimespans} />
+  <FuturePricesVisual prices={filteredPrices} carChargeTimespans={chargeTimespans} />
 </div>
 {:else}
   <h1 class='text-2xl font-bold'>No prices found</h1>
