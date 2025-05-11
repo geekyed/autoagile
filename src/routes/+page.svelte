@@ -17,13 +17,12 @@
   let chargeTimespans: AndersenChargeTimespan[] = $state([])
   chargeTimespans = [...carChargeTimespans];
 
-  // $effect(() => {
-  //   setInterval(() => {
-  //     console.log("filtering prices", Date.now());
-  //     localPrices = localPrices.filter(price => price.end.getTime() > new Date().getTime());
-  //     localPrices.sort((a, b) => a.start.getTime() - b.start.getTime());
-  //   }, 3000)
-  // })
+  $effect(() => {
+    setInterval(() => {
+      localPrices = localPrices.filter(price => price.end.getTime() > new Date().getTime());
+      localPrices.sort((a, b) => a.start.getTime() - b.start.getTime());
+    }, 3000)
+  })
 
   $effect(() => {
     if (userProfile && userProfile.octopusTariff && !channel) {
