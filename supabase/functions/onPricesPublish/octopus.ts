@@ -1,9 +1,7 @@
-import { deletePrices, insertPrices } from "../_shared/dbPrices.ts";
+import { insertPrices } from "../_shared/dbPrices.ts";
 
 export const getPrices = async (tariffCode: string): Promise<Price[]> => {
   console.info(`getting new prices for ${tariffCode}`);
-
-  await deletePrices(tariffCode);
 
   const prices = await getNewPrices(tariffCode);
   console.info(`got ${prices.length} new prices for ${tariffCode}`);

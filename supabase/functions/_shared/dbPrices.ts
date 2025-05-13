@@ -20,8 +20,11 @@ export const getPrices = async (tariffCode: string): Promise<Price[]> => {
 };
 
 export const insertPrices = async (prices: Price[]): Promise<void> => {
+  const filteredPrices = prices.filter((price) =>
+    price.end.getTime() > new Date().getTime()
+  );
   const pricesToInsert: Database["public"]["Tables"]["prices"]["Insert"][] =
-    prices.map((p) => {
+    filteredPrices.map((p) => {
       return {
         tariff: p.tariff,
         price: p.price,
@@ -30,16 +33,36 @@ export const insertPrices = async (prices: Price[]): Promise<void> => {
       };
     });
   console.log("Prices to insert:", pricesToInsert);
-  const { error } = await supabase.from("prices").insert(pricesToInsert);
+
+  const { error } = await supabase
+    .from("prices")
+    .upsert(pricesToInsert, {
+      onConflict: "tariff,start",
+      ignoreDuplicates: true,
+    });
+
   if (error) {
     console.error("Error inserting prices into database:", error);
   }
 };
 
-export const deletePrices = async (tariffCode: string): Promise<void> => {
+// floors minutes to the nearest half an hour
+const getMinutes = (minutes: number): number => {
+  return Math.floor(minutes / 30) * 30;
+};
+
+export const deletePrices = async (
+  end: Date,
+): Promise<void> => {
+  const flooredEnd = new Date(end);
+  flooredEnd.setSeconds(0, 0);
+  flooredEnd.setMinutes(getMinutes(end.getMinutes()));
+
+  console.log(`deleting price with end: ${flooredEnd}`);
+
   const { error } = await supabase.from("prices").delete().eq(
-    "tariff",
-    tariffCode,
+    "end",
+    flooredEnd.toISOString(),
   );
   if (error) {
     console.error("Error deleting prices from database:", error);

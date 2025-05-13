@@ -7,11 +7,15 @@ import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { getAndersenChargeTimespans } from "./dbAndersenChargeTimespan.ts";
 import { getAndersenChargeConfig } from "./dbAndersenConfig.ts";
 import AndersenA2 from "./andersen/AndersenA2.ts";
+import { equalWithFuzziness } from "../_shared/dateTools.ts";
+import { deletePrices } from "../_shared/dbPrices.ts";
 
 Deno.serve(async () => {
   console.log("Function 'chargeController' invoked");
 
   const now = new Date();
+  deletePrices(now);
+
   const chargeTimespans = await getAndersenChargeTimespans();
 
   for (const timespan of chargeTimespans) {
@@ -55,19 +59,6 @@ Deno.serve(async () => {
     { headers: { "Content-Type": "application/json" } },
   );
 });
-
-const equalWithFuzziness = (
-  date1: Date | undefined,
-  date2: Date | undefined,
-  fuzzinessInMinutes: number,
-) => {
-  if (!date1 && !date2) return true;
-  if (!date1 || !date2) return false;
-  const timeDifference = Math.abs(date1.getTime() - date2.getTime());
-  const fuzzinessInMilliseconds = fuzzinessInMinutes * 60 * 1000;
-
-  return timeDifference <= fuzzinessInMilliseconds;
-};
 
 /* To invoke locally:
 
