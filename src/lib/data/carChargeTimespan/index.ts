@@ -6,7 +6,7 @@ import {
 } from "../../db/schema";
 import { getOrCreateCarConfig } from "../carConfig";
 import { error } from "@sveltejs/kit";
-import { getPrices } from "../prices";
+import { getSortedPrices } from "../prices";
 
 export const getCarChargeTimespan = async (
   locals: App.Locals,
@@ -49,7 +49,7 @@ export const createNewChargeTimespans = async (
   if (!config) {
     error(500, "Failed to get car charging configuration");
   }
-  const prices = await getPrices(locals);
+  const prices = await getSortedPrices(locals);
 
   const newTimespans = generateCarChargeTimespans(
     config,
