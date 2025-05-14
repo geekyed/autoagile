@@ -17,23 +17,40 @@
   let chargeTimespans: AndersenChargeTimespan[] = $state([])
   chargeTimespans = [...carChargeTimespans];
 
-  $effect(() => {
-    setInterval(() => {
-      localPrices = localPrices.filter(price => price.end.getTime() > new Date().getTime());
-      localPrices.sort((a, b) => a.start.getTime() - b.start.getTime());
-    }, 3000)
-  })
 
   $effect(() => {
     if (userProfile && userProfile.octopusTariff && !channel) {
-      channel = subscribeToPriceChanges(userProfile.octopusTariff, (newPrices: Price[]) => {
-        localPrices.length = 0; 
-        console.log("adding new prices", newPrices);
-        const foo = newPrices.sort((a, b) => a.start.getTime() - b.start.getTime()).filter(price => price.end.getTime() > new Date().getTime());
-        localPrices.push(...foo)});
+      channel = subscribeToPriceChanges(userProfile.octopusTariff, (pricesChanges: PriceChanges) => {
+        if (pricesChanges.inserts) {
+          console.log("adding new prices", pricesChanges.inserts);
+          localPrices.push(...pricesChanges.inserts);
+          localPrices = localPrices.sort((a, b) => a.start.getTime() - b.start.getTime());
+        }
+        if (pricesChanges.updates) {
+          console.log("updating prices", pricesChanges.updates);
+          pricesChanges.updates.forEach(price => {
+            const index = localPrices.findIndex(p => p.start.getTime() === price.start.getTime());
+            if (index !== -1) {
+              localPrices[index] = price;
+            }
+          });
+          localPrices = localPrices.sort((a, b) => a.start.getTime() - b.start.getTime());
+        }
+        if (pricesChanges.deletes) {
+          console.log("deleting prices", pricesChanges.deletes);
+          // Filter out prices that match any in the deletes array
+          localPrices = localPrices.filter(price => {
+            // Check if this price exists in the deletes array
+            return !pricesChanges.deletes?.some(deletedPrice => 
+              deletedPrice.start && price.start.getTime() === new Date(deletedPrice.start).getTime()
+            );
+          });
+          localPrices = localPrices.sort((a, b) => a.start.getTime() - b.start.getTime());
+        }
+      });
     }
   });
-    
+
 </script>
 
 {#if userProfile}

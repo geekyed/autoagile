@@ -1,29 +1,19 @@
-import { createClient, RealtimeChannel } from "@supabase/supabase-js";
+import {
+  createClient,
+  REALTIME_LISTEN_TYPES,
+  RealtimeChannel,
+  type RealtimePostgresChangesPayload,
+} from "@supabase/supabase-js";
 import {
   PUBLIC_SUPABASE_ANON_KEY,
   PUBLIC_SUPABASE_URL,
 } from "$env/static/public";
 
-interface PricesPayload {
-  schema: "public" | "private";
-  table: string;
-  commit_timestamp: Date;
-  eventType: "INSERT" | "UPDATE" | "DELETE";
-  new: {
-    end: Date;
-    id: string;
-    price: number;
-    start: Date;
-    tariff: string;
-  };
-  old: object;
-  errors: null | object;
-  latency: number;
-}
+let myCallback: (priceChanges: PriceChanges) => void = () => {};
 
-let myCallback: (newPrices: Price[]) => void = () => {};
-
-const batchedPrices: Price[] = [];
+let batchedInserts: Price[] | undefined = undefined;
+let batchedUpdates: Price[] | undefined = undefined;
+let batchedDeletes: Partial<Price>[] | undefined = undefined;
 
 const supabase = createClient(
   PUBLIC_SUPABASE_URL,
@@ -32,23 +22,73 @@ const supabase = createClient(
 
 let flushScheduled = false;
 
-const handleNewPrices = (payload: PricesPayload) => {
-  batchedPrices.push({
-    price: payload.new.price,
-    start: new Date(payload.new.start),
-    end: new Date(payload.new.end),
-    tariff: payload.new.tariff,
-  });
+const dbPriceToPrice = (dbPrice: Partial<Price>): Price => {
+  return {
+    ...dbPrice,
+    start: new Date(dbPrice.start || 0),
+    end: new Date(dbPrice.end || 0),
+    tariff: dbPrice.tariff || "",
+    price: dbPrice.price || 0,
+  };
+};
+
+const handleNewPrices = (
+  change: RealtimePostgresChangesPayload<Price>,
+) => {
+  switch (change.eventType) {
+    case "DELETE":
+      if (!batchedDeletes) batchedDeletes = [];
+      if (change.old) {
+        batchedDeletes.push(dbPriceToPrice(change.old));
+      }
+      break;
+    case "INSERT":
+      if (!batchedInserts) batchedInserts = [];
+      if (change.old) batchedInserts.push(dbPriceToPrice(change.new));
+      break;
+    case "UPDATE":
+      if (!batchedUpdates) batchedUpdates = [];
+      if (change.old) batchedUpdates.push(dbPriceToPrice(change.new));
+      break;
+  }
 
   if (!flushScheduled) {
     flushScheduled = true;
-    setTimeout(() => {
-      console.log(
-        "returning batched prices to UI",
-        JSON.stringify(batchedPrices),
-      );
-      myCallback([...batchedPrices]); // Avoid mutation issues
-      batchedPrices.length = 0;
+    setInterval(() => {
+      if (!batchedUpdates && !batchedInserts && !batchedDeletes) return;
+
+      const batchedChanges: PriceChanges = {
+        updates: undefined,
+        inserts: undefined,
+        deletes: undefined,
+      };
+
+      if (batchedUpdates) {
+        console.log(
+          "returning batched updates to UI",
+          JSON.stringify(batchedUpdates),
+        );
+        batchedChanges.updates = [...batchedUpdates];
+        batchedUpdates = undefined;
+      }
+      if (batchedInserts) {
+        console.log(
+          "returning batched inserts to UI",
+          JSON.stringify(batchedInserts),
+        );
+        batchedChanges.inserts = [...batchedInserts];
+        batchedInserts = undefined;
+      }
+      if (batchedDeletes) {
+        console.log(
+          "returning batched deletes to UI",
+          JSON.stringify(batchedDeletes),
+        );
+        batchedChanges.deletes = [...batchedDeletes];
+        batchedDeletes = undefined;
+      }
+
+      myCallback(batchedChanges);
       flushScheduled = false;
     }, 1000);
   }
@@ -56,7 +96,7 @@ const handleNewPrices = (payload: PricesPayload) => {
 
 export const subscribeToPriceChanges = (
   tariff: string,
-  callback: (newPrices: Price[]) => void,
+  callback: (priceChanges: PriceChanges) => void,
 ) => {
   console.log(
     `subscribing to price changes channel - prices-changes-${tariff}`,
@@ -65,9 +105,9 @@ export const subscribeToPriceChanges = (
   return supabase
     .channel(`prices-changes-${tariff}`)
     .on(
-      "postgres_changes",
+      REALTIME_LISTEN_TYPES.POSTGRES_CHANGES,
       {
-        event: "INSERT",
+        event: "*",
         schema: "public",
         table: "prices",
         filter: `tariff=eq.${tariff}`,

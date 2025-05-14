@@ -29,3 +29,9 @@ interface AndersenChargeConfig {
   batterySize: number;
   chargeRate: number;
 }
+
+interface PriceChanges {
+  updates: Price[] | undefined;
+  inserts: Price[] | undefined;
+  deletes: Partial<Price>[] | undefined;
+}

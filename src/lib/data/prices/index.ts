@@ -2,7 +2,7 @@ import { eq } from "drizzle-orm";
 import { pricesTable, profileTable } from "../../db/schema";
 import { db } from "../../db";
 
-export const getPrices = async (locals: App.Locals): Promise<Price[]> => {
+const getPrices = async (locals: App.Locals): Promise<Price[]> => {
   const { user } = await locals.safeGetSession();
 
   if (!user) {
@@ -23,4 +23,10 @@ export const getPrices = async (locals: App.Locals): Promise<Price[]> => {
   });
 
   return prices;
+};
+
+export const getSortedPrices = async (locals: App.Locals): Promise<Price[]> => {
+  return (await getPrices(locals)).sort((a, b) =>
+    a.start.getTime() - b.start.getTime()
+  );
 };
