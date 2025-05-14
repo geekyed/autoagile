@@ -1,9 +1,10 @@
 import { error } from "@sveltejs/kit";
 import { zfd } from "zod-form-data";
-import { db } from "../../lib/db";
-import { andersenConfigTable } from "../../lib/db/schema";
 import { eq } from "drizzle-orm";
-import { getOrCreateCarConfig } from "../../lib/data/carConfig";
+
+import { db } from "$lib/db";
+import { andersenConfigTable } from "$lib/db/schema";
+import { getOrCreateCarConfig } from "$lib/data/carConfig";
 
 export const load = async ({ locals }) => {
   console.info("load running");

@@ -1,8 +1,8 @@
 <script lang='ts'>
-	import { Button } from '../../lib/components/ui/button';
-	import { Card, CardContent, CardHeader } from '../../lib/components/ui/card';
-	import Input from '../../lib/components/ui/input/input.svelte';
-	import { Label } from '../../lib/components/ui/label';
+	import { Button } from '$lib/components/ui/button';
+	import { Card, CardContent, CardHeader } from '$lib/components/ui/card';
+	import Input from '$lib/components/ui/input/input.svelte';
+	import { Label } from '$lib/components/ui/label';
   import { enhance } from '$app/forms';
 	import { invalidate } from '$app/navigation';
 
