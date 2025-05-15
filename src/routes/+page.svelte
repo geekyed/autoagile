@@ -25,9 +25,7 @@
 	const { userProfile, prices, carChargeTimespans, carChargeConfig } = data;
 
 	let visibilityHandlerRegistered = false;
-	let localPrices = $derived(sortPrices(
-		prices.filter(price => price.end.getTime() > new Date().getTime())
-	));
+	let localPrices = $derived(sortPrices(prices));
 
 	let channel: RealtimeChannel | null = $state(null);
 	let chargeTimespans: AndersenChargeTimespan[] = $state([...carChargeTimespans]);
