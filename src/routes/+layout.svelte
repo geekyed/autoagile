@@ -32,6 +32,7 @@
 		<div class="flex gap-2 items-center">
 			{#if userProfile === null}
 				<Button variant="secondary" href="/auth/login/github">Sign in with GitHub</Button>
+				<Button variant="secondary" href="/auth/login/google">Sign in with Google</Button>
 			{:else}
 				<Button variant="secondary" href="/auth/logout">Logout</Button>
 			{/if}

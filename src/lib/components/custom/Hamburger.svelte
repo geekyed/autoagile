@@ -40,6 +40,7 @@
     {#if userProfile === null}
       <DropdownMenu.Item>
         <Button variant='ghost' class='flex flex-row w-full justify-start text-lg' href='/auth/login/github'><Github class="mr-2 size-6"/> Sign in with GitHub</Button>
+        <Button variant='ghost' class='flex flex-row w-full justify-start text-lg' href='/auth/login/google'><Github class="mr-2 size-6"/> Sign in with Google</Button>
       </DropdownMenu.Item>	
     {:else}
       <DropdownMenu.Item>

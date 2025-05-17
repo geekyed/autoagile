@@ -1,10 +1,13 @@
 import { redirect } from "@sveltejs/kit";
 
-export const GET = async ({ locals: { supabase }, url }) => {
+export const GET = async ({ locals: { supabase } }) => {
   const { data } = await supabase.auth.signInWithOAuth({
-    provider: "github",
+    provider: "google",
     options: {
-      redirectTo: url.origin + "/auth/callback",
+      queryParams: {
+        access_type: "offline",
+        prompt: "consent",
+      },
     },
   });
   if (data.url) {

@@ -13,5 +13,6 @@
   </CardHeader>
   <CardContent>
     <Button href="/auth/login/github">sign in with github</Button>
+    <Button href="/auth/login/google">sign in with google</Button>
   </CardContent>
 </Card>
