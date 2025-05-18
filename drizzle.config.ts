@@ -5,7 +5,7 @@ export default defineConfig({
   schema: "./src/lib/db/schema.ts",
   out: "./supabase/migrations",
   dbCredentials: {
-    host: "localhost",
+    host: "127.0.0.1",
     port: 54321,
     user: "postgres",
     password: "postgres",

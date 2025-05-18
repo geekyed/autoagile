@@ -7,6 +7,20 @@ import {
   uuid,
 } from "drizzle-orm/pg-core";
 
+export const groupsTable = pgTable("groups", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  name: text("name").notNull(),
+});
+
+export const userGroupsTable = pgTable("user_groups", {
+  userId: uuid("userId").references(() => profileTable.id).notNull(),
+  groupId: uuid("groupId").references(() => groupsTable.id).notNull(),
+}, (table) => {
+  return {
+    pk: primaryKey({ columns: [table.userId, table.groupId] }),
+  };
+});
+
 export const profileTable = pgTable("profile", {
   id: uuid("id").primaryKey().notNull(),
   name: text("name").notNull(),
