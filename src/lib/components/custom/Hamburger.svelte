@@ -1,23 +1,17 @@
 
 <script lang='ts'>
-  import { BatteryCharging, Github, LogOut, Menu, Settings, User } from '@lucide/svelte';
+  import { BatteryCharging, Github, LogOut, Menu, Settings, User, Chrome } from '@lucide/svelte';
   
   import * as DropdownMenu from '$lib/components/ui/dropdown-menu'
 	import DarkModeInDropdown from '$lib/components/custom/darkModeInDropdown.svelte';
 	import { Button, buttonVariants } from '../ui/button';
+	import type { Session } from '@supabase/supabase-js';
 
   interface PropsType {
-    userProfile: {
-    id: string;
-    name: string;
-    email: string;
-    octopusAccountId: string;
-    octopusAPIKey: string;
-    octopusTariff: string | null;
-    } | null | undefined
+    session: Session | null | undefined,
   }
 
-  const { userProfile }: PropsType = $props()
+  const { session }: PropsType = $props()
 </script>
 
 <DropdownMenu.Root>
@@ -37,10 +31,12 @@
       <DropdownMenu.Item>
         <DarkModeInDropdown />
       </DropdownMenu.Item>
-    {#if userProfile === null}
+    {#if !session}
       <DropdownMenu.Item>
         <Button variant='ghost' class='flex flex-row w-full justify-start text-lg' href='/auth/login/github'><Github class="mr-2 size-6"/> Sign in with GitHub</Button>
-        <Button variant='ghost' class='flex flex-row w-full justify-start text-lg' href='/auth/login/google'><Github class="mr-2 size-6"/> Sign in with Google</Button>
+      </DropdownMenu.Item>
+      <DropdownMenu.Item>	
+        <Button variant='ghost' class='flex flex-row w-full justify-start text-lg' href='/auth/login/google'><Chrome class="mr-2 size-6"/> Sign in with Google</Button>
       </DropdownMenu.Item>	
     {:else}
       <DropdownMenu.Item>

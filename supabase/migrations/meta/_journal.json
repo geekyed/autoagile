@@ -5,64 +5,36 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1744816863233,
-      "tag": "0000_fantastic_giant_girl",
+      "when": 1747828279301,
+      "tag": "0000_calm_mauler",
       "breakpoints": true
     },
     {
       "idx": 1,
       "version": "7",
-      "when": 1745139090328,
-      "tag": "0001_medical_boomerang",
+      "when": 1747858956619,
+      "tag": "0001_loving_turbo",
       "breakpoints": true
     },
     {
       "idx": 2,
       "version": "7",
-      "when": 1745181045852,
-      "tag": "0002_sparkling_puppet_master",
+      "when": 1748014398963,
+      "tag": "0002_heavy_vargas",
       "breakpoints": true
     },
     {
       "idx": 3,
       "version": "7",
-      "when": 1745316148455,
-      "tag": "0003_cheerful_venus",
+      "when": 1748204911337,
+      "tag": "0003_loud_dreadnoughts",
       "breakpoints": true
     },
     {
       "idx": 4,
       "version": "7",
-      "when": 1745571831954,
-      "tag": "0004_parched_the_fallen",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "7",
-      "when": 1745913827776,
-      "tag": "0005_silky_sleepwalker",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "7",
-      "when": 1747081732052,
-      "tag": "0006_mute_agent_brand",
-      "breakpoints": true
-    },
-    {
-      "idx": 7,
-      "version": "7",
-      "when": 1747081776190,
-      "tag": "0007_noisy_blonde_phantom",
-      "breakpoints": true
-    },
-    {
-      "idx": 8,
-      "version": "7",
-      "when": 1747511563517,
-      "tag": "0008_daffy_stellaris",
+      "when": 1748206088692,
+      "tag": "0004_odd_bedlam",
       "breakpoints": true
     }
   ]

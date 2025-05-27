@@ -1,0 +1,1 @@
+ALTER TABLE "group" ADD CONSTRAINT "group_owner_id_unique" UNIQUE("owner_id");

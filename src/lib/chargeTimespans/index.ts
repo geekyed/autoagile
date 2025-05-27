@@ -1,83 +1,51 @@
-import { eq } from "drizzle-orm";
-import { db } from "../../db";
-import {
-  andersenChargeTimespanTable,
-  andersenConfigTable,
-} from "../../db/schema";
-import { getOrCreateCarConfig } from "../carConfig";
-import { error } from "@sveltejs/kit";
-import { getSortedPrices } from "../prices";
-
-export const getCarChargeTimespan = async (
-  locals: App.Locals,
-): Promise<AndersenChargeTimespan[]> => {
-  const { user } = await locals.safeGetSession();
-
-  if (!user) {
-    console.error("User not found when accessing timespans");
-    return [];
-  }
-
-  const carChargeTimespans = await db.query.andersenChargeTimespanTable
-    .findMany({
-      where: eq(andersenConfigTable.userId, user.id),
-    });
-
-  if (!carChargeTimespans) {
-    return [];
-  }
-
-  return carChargeTimespans;
-};
+import * as carChargeTimespansDb from "$lib/data/andersenChargeTimespan";
+import * as carConfigDb from "$lib/data/andersenConfig";
+import * as pricesDb from "$lib/data/prices";
 
 export const createNewChargeTimespans = async (
-  locals: App.Locals,
+  group: Group,
   toTime: Date,
   percentCharge: number,
 ) => {
-  const { user } = await locals.safeGetSession();
-
-  if (!user) {
-    return null;
-  }
-
-  await db.delete(andersenChargeTimespanTable).where(
-    eq(andersenChargeTimespanTable.userId, user.id),
-  );
-
-  const config = await getOrCreateCarConfig(locals);
+  const config = await carConfigDb.get(group.id);
   if (!config) {
-    error(500, "Failed to get car charging configuration");
+    throw Error(
+      `Failed to get car charging configuration for group; ${group.id}`,
+    );
   }
-  const prices = await getSortedPrices(locals);
+  if (!group.octopusTariff) {
+    throw Error(
+      `Group ${group.id} does not have an octopus tariff set, cannot create charge timespans`,
+    );
+  }
 
-  const newTimespans = generateCarChargeTimespans(
+  await carChargeTimespansDb.deleteAll(group.id);
+
+  const prices = await pricesDb.get(group.octopusTariff);
+
+  const { chargeTimespans, error } = generateCarChargeTimespans(
     config,
     toTime,
     percentCharge,
     prices,
   );
-  if (newTimespans.error) {
-    error(500, newTimespans.error);
+  if (error) {
+    throw Error(error);
   }
 
-  if (newTimespans!.chargeTimespans!.length === 0) {
+  if (chargeTimespans!.length === 0) {
     return [];
   }
 
-  await db.insert(andersenChargeTimespanTable).values(
-    newTimespans.chargeTimespans!.map((timespan) => ({
-      userId: timespan.userId,
-      startTime: timespan.startTime,
-      endTime: timespan.endTime,
-      averagePrice: timespan.averagePrice,
-    })),
+  await carChargeTimespansDb.insert(
+    group.id,
+    chargeTimespans!,
   );
-  return newTimespans.chargeTimespans;
+  return chargeTimespans;
 };
 
 const generateCarChargeTimespans = (
-  chargeConfig: AndersenChargeConfig,
+  chargeConfig: AndersenConfig,
   endDateTime: Date,
   percentCharge: number,
   prices: Price[],
@@ -102,7 +70,6 @@ const generateCarChargeTimespans = (
     return {
       error: "Not enough slots available",
       chargeTimespans: [{
-        userId: chargeConfig.userId,
         startTime: prices.sort((a, b) =>
           a.start.getTime() - b.start.getTime()
         )[0].start,
@@ -123,7 +90,6 @@ const generateCarChargeTimespans = (
     slotCount++;
     if (!currentTimespan) {
       currentTimespan = {
-        userId: chargeConfig.userId,
         startTime: currentPrice.start,
         averagePrice: currentPrice.price,
         endTime: currentPrice.end,

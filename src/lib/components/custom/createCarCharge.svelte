@@ -8,7 +8,7 @@
 	import { Slider } from '../ui/slider';
 
   interface PropsType {
-    carChargingConfig: AndersenChargeConfig | null;
+    carChargingConfig: AndersenChargeConfig | null | undefined;
     carChargeTimespans: AndersenChargeTimespan[];
   }
 

@@ -1,30 +1,42 @@
 import { error } from "@sveltejs/kit";
 import { zfd } from "zod-form-data";
-import { eq } from "drizzle-orm";
 
-import { db } from "$lib/db";
-import { andersenConfigTable } from "$lib/db/schema";
-import { getOrCreateCarConfig } from "$lib/data/carConfig";
+import * as carConfigDb from "$lib/data/andersenConfig";
+import * as profileDb from "$lib/data/profile";
 
 export const load = async ({ locals }) => {
   console.info("load running");
-  return { carChargingConfig: await getOrCreateCarConfig(locals) };
+
+  const { user } = await locals.safeGetSession();
+
+  if (!user) {
+    console.error("User not found", user);
+    error(401, "Unauthorized");
+  }
+
+  const profile = await profileDb.get(user.id);
+  if (!profile) {
+    console.error("Profile not found");
+    error(400, "profile not configured");
+  }
+
+  return {
+    carChargingConfig: await carConfigDb.get(profile.group.id),
+  };
 };
 
 export const actions = {
   default: async ({ request, locals }) => {
     const { user } = await locals.safeGetSession();
-    console.info("Car charging config form submission received");
-    const carChargingConfig = await getOrCreateCarConfig(locals);
-    if (!carChargingConfig) {
-      console.error("Car charging config not found");
+    if (!user) {
       error(401, "Unauthorized");
     }
+    console.info("Car charging config form submission received");
 
-    console.info(
-      "Gotten or created car charging config",
-      JSON.stringify(carChargingConfig),
-    );
+    const profile = await profileDb.get(user.id);
+    if (!profile) {
+      error(400, "profile not configured");
+    }
 
     const schema = zfd.formData({
       andersenUsername: zfd.text(),
@@ -41,9 +53,10 @@ export const actions = {
       error(400, parseError?.message);
     }
 
-    await db.update(andersenConfigTable).set({
+    await carConfigDb.upsert({
       ...data,
-    }).where(eq(andersenConfigTable.userId, user?.id || ""));
+      groupId: profile.group.id,
+    });
 
     console.info("Updated car charging config in database", user?.id, data);
     return { success: true };

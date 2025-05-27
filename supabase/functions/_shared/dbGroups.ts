@@ -3,7 +3,7 @@ import { supabase } from "./supabaseAdmin.ts";
 export const getUniqueTariffs = async (): Promise<Set<string>> => {
   console.info("Fetching unique tariffs from the database");
 
-  const { data, error } = await supabase.from("profile").select(
+  const { data, error } = await supabase.from("group").select(
     "octopus_tariff",
   );
 
@@ -13,15 +13,15 @@ export const getUniqueTariffs = async (): Promise<Set<string>> => {
   }
 
   if (error || !data || data.length === 0) {
-    console.info("No profiles found in the database.");
+    console.info("No groups found in the database.");
     return new Set<string>();
   }
 
   // Extract unique tariffs from the data
   const uniqueTariffs = new Set<string>();
-  data.forEach((profile) => {
-    if (profile.octopus_tariff) {
-      uniqueTariffs.add(profile.octopus_tariff);
+  data.forEach((group) => {
+    if (group.octopus_tariff) {
+      uniqueTariffs.add(group.octopus_tariff);
     }
   });
 

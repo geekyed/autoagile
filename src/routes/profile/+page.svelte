@@ -6,11 +6,12 @@
   import { enhance } from '$app/forms';
 
   const { data } = $props()
-  const {userProfile} = data;
+  const {userProfile, session } = data;
 
   let name = $state('');
   let email = $state('');
-  let octopusAccountID = $state('');
+  let groupName = $state('');
+  let octopusAccountId = $state('');
   let octopusAPIKey = $state('');
   let octopusTariff = $state('');
 
@@ -18,27 +19,26 @@
     if (userProfile) {
       name = userProfile.name;
       email = userProfile.email;
-      octopusAccountID = userProfile.octopusAccountId;
-      octopusAPIKey = userProfile.octopusAPIKey;
-      octopusTariff = userProfile.octopusTariff || '';
+      groupName = userProfile.group.name;
+      octopusTariff = userProfile.group.octopusTariff || 'none found';
     }
+    email = session?.user?.email || '';
   });
 
 </script>
-{#if userProfile}
 <div class='flex flex-col items-center gap-5'>
   <Card class='w-full max-w-xl'>
     <CardContent>
-      <form class='flex flex-col gap-2' method="post" use:enhance={({formData}) => {
+      <form class='flex flex-col gap-2' method="post" action="?/saveProfile" use:enhance={({formData}) => {
         formData.set('name', name);
         formData.set('email', email);
-        formData.set('octopusAccountId', octopusAccountID);
-        formData.set('octopusAPIKey', octopusAPIKey);
         return ({result}) => {
           if (result.type === 'success') {
+            alert('profile updated');
             window.location.reload();
           } else {
-            alert('Failed to update profile');
+            alert(`Failed to update profile: ${result.status}`);
+            console.error(JSON.stringify(result));
           }
         };
       }}>
@@ -50,23 +50,49 @@
             <Label>Name</Label>
             <Input bind:value={name}/>
           </div>
-          <div>    
-            <Label>Octopus Account Id</Label>
-            <Input bind:value={octopusAccountID}/>
-          </div>
-          <div>    
-            <Label>Octopus API Key</Label>
-            <Input type='password' bind:value={octopusAPIKey} />
-          </div>
           <div>
-            <Label>Octopus Tariff Code</Label>
-            <Input bind:value={octopusTariff} disabled />
-          </div>
-          <div>
-            <Button type='submit'>Update</Button>
+          <Button type='submit'>{userProfile ? 'Update Profile' : 'Create Profile'}</Button>
           </div>
       </form>
     </CardContent>
   </Card>
+  {#if userProfile?.group}
+  <Card class='w-full max-w-xl'>
+    <CardContent>
+      <form class='flex flex-col gap-2' method="post" action="?/saveGroup" use:enhance={({formData}) => {
+        formData.set('groupId', userProfile?.group.id || '');
+        formData.set('groupName', groupName);
+        formData.set('octopusAccountId', octopusAccountId);
+        formData.set('octopusAPIKey', octopusAPIKey);
+        return ({result}) => {
+          if (result.type === 'success') {
+            window.location.reload();
+          } else {
+            alert('Failed to update group');
+          }
+        };
+      }}>
+      <div>
+        <Label>Group Name</Label>
+        <Input bind:value={groupName} />
+      </div>
+      <div>
+        <Label>Octopus Account ID</Label>
+        <Input bind:value={octopusAccountId} />
+      </div>
+      <div>    
+        <Label>Octopus API Key</Label>
+        <Input type='password' bind:value={octopusAPIKey} />
+      </div>
+      <div>
+        <Label>Octopus Tariff Code</Label>
+        <Input bind:value={octopusTariff} disabled />
+      </div>
+      <div>
+      <Button type='submit'>{userProfile?.group ? 'Update Group' : 'Create Group'}</Button>
+      </div>
+      </form>
+    </CardContent>
+  </Card>
+  {/if}
 </div>
-{/if}

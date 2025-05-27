@@ -87,8 +87,8 @@
 	};
 
 	$effect(() => {
-		if (userProfile?.octopusTariff && !channel) {
-			channel = subscribeToPriceChanges(userProfile.octopusTariff, (pricesChanges: PriceChanges) => {
+		if (userProfile?.group.octopusTariff && !channel) {
+			channel = subscribeToPriceChanges(userProfile?.group.octopusTariff, (pricesChanges: PriceChanges) => {
 				try {
 					if (pricesChanges.inserts) handlePriceInserts(pricesChanges.inserts);
 					if (pricesChanges.updates) handlePriceUpdates(pricesChanges.updates);
@@ -102,17 +102,11 @@
 
 </script>
 
-{#if userProfile}
-<div class='flex flex-col items-center gap-5'>
-{#if prices.length > 0}
 <div class='flex flex-col flex-grow gap-5 justify-center items-center'>
-  <CreateCarCharge carChargingConfig={carChargeConfig} bind:carChargeTimespans={chargeTimespans}/>
-  <FuturePricesVisual prices={localPrices} carChargeTimespans={chargeTimespans} />
-</div>
+{#if prices.length > 0}
+	<CreateCarCharge carChargingConfig={carChargeConfig} bind:carChargeTimespans={chargeTimespans}/>
+	<FuturePricesVisual prices={localPrices} carChargeTimespans={chargeTimespans} />
 {:else}
-  <h1 class='text-2xl font-bold'>No prices found</h1>
+	<h1 class='text-2xl font-bold'>No prices found</h1>
 {/if}
 </div>
-{:else}
-  <h1>Please log in!</h1>
-{/if}

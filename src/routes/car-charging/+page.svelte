@@ -7,7 +7,7 @@
 	import { invalidate } from '$app/navigation';
 
   const { data } = $props()
-  const {carChargingConfig} = data;
+  const { carChargingConfig } = $derived(data);
 
   let andersenUsername = $state('');
   let andersenPassword = $state('');
@@ -24,7 +24,6 @@
   });
 
 </script>
-{#if carChargingConfig}
 <div class='flex flex-col items-center gap-5'>
   <Card class='w-full max-w-xl'>
     <CardContent>
@@ -58,10 +57,9 @@
             <Input bind:value={batterySize} />
           </div>
           <div>
-            <Button type='submit'>Update</Button>
+            <Button type='submit'>{carChargingConfig ? 'Update' : 'Create Config'}</Button>
           </div>
       </form>
     </CardContent>
   </Card>
 </div>
-{/if}

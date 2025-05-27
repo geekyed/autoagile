@@ -4,7 +4,7 @@
 
 // Setup type definitions for built-in Supabase Runtime APIs
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
-import { getUniqueTariffs } from "../_shared/dbProfile.ts";
+import { getUniqueTariffs } from "../_shared/dbGroups.ts";
 import { getPrices } from "./octopus.ts";
 
 Deno.serve(async () => {

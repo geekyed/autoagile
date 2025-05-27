@@ -2,9 +2,22 @@ interface UserProfile {
   id: string;
   name: string;
   email: string;
-  octopusAccountId: string;
-  octopusAPIKey: string;
+  group: Group;
+}
+
+interface Group {
+  id: string;
+  name: string;
+  ownerId: string;
   octopusTariff: string | null;
+}
+
+interface AndersenConfig {
+  groupId: string;
+  andersenUsername: string;
+  andersenPassword: string;
+  batterySize: number;
+  chargeRate: number;
 }
 
 interface Price {
@@ -15,19 +28,9 @@ interface Price {
 }
 
 interface AndersenChargeTimespan {
-  userId: string;
   startTime: Date;
   endTime: Date;
   averagePrice: number;
-}
-
-interface AndersenChargeConfig {
-  id: string;
-  userId: string;
-  andersenUsername: string;
-  andersenPassword: string;
-  batterySize: number;
-  chargeRate: number;
 }
 
 interface PriceChanges {

@@ -1,5 +1,11 @@
 import {
+  type ColumnBaseConfig,
+  type ColumnDataType,
+  relations,
+} from "drizzle-orm";
+import {
   doublePrecision,
+  PgColumn,
   pgTable,
   primaryKey,
   text,
@@ -7,27 +13,37 @@ import {
   uuid,
 } from "drizzle-orm/pg-core";
 
-export const groupsTable = pgTable("groups", {
+export const groupTable = pgTable("group", {
   id: uuid("id").primaryKey().defaultRandom(),
   name: text("name").notNull(),
-});
-
-export const userGroupsTable = pgTable("user_groups", {
-  userId: uuid("userId").references(() => profileTable.id).notNull(),
-  groupId: uuid("groupId").references(() => groupsTable.id).notNull(),
-}, (table) => {
-  return {
-    pk: primaryKey({ columns: [table.userId, table.groupId] }),
-  };
+  ownerId: uuid("owner_id").notNull().unique(),
+  octopusTariff: text("octopus_tariff"),
 });
 
 export const profileTable = pgTable("profile", {
   id: uuid("id").primaryKey().notNull(),
   name: text("name").notNull(),
   email: text("email").notNull(),
-  octopusAccountId: text("octopus_account_id").notNull(),
-  octopusAPIKey: text("octopus_account_key").notNull(),
-  octopusTariff: text("octopus_tariff"),
+  groupId: uuid("groupId").references((): PgColumn<
+    ColumnBaseConfig<ColumnDataType, string>
+  > => groupTable.id),
+});
+
+export const profileRelations = relations(profileTable, ({ one }) => ({
+  group: one(groupTable, {
+    fields: [profileTable.groupId],
+    references: [groupTable.id],
+  }),
+}));
+
+export const andersenConfigTable = pgTable("andersen_config", {
+  groupId: uuid("group_id").references((): PgColumn<
+    ColumnBaseConfig<ColumnDataType, string>
+  > => groupTable.id).primaryKey(),
+  andersenUsername: text("andersen_username").notNull(),
+  andersenPassword: text("andersen_password").notNull(),
+  batterySize: doublePrecision("battery_size").notNull(),
+  chargeRate: doublePrecision("charge_rate").notNull(),
 });
 
 export const pricesTable = pgTable("prices", {
@@ -35,32 +51,23 @@ export const pricesTable = pgTable("prices", {
   price: doublePrecision("price").notNull(),
   start: timestamp("start", { precision: 6, withTimezone: true }).notNull(),
   end: timestamp("end", { precision: 6, withTimezone: true }).notNull(),
-}, (table) => {
-  return {
-    pk: primaryKey({ columns: [table.tariff, table.start] }),
-  };
-});
-
-export const andersenConfigTable = pgTable("andersen_config_table", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  userId: uuid("user_id").references(() => profileTable.id).notNull(),
-  andersenUsername: text("andersen_username").notNull(),
-  andersenPassword: text("andersen_password").notNull(),
-  batterySize: doublePrecision("battery_size").notNull(),
-  chargeRate: doublePrecision("charge_rate").notNull(),
-});
+}, (table) => [
+  primaryKey({ columns: [table.tariff, table.start] }),
+]);
 
 export const andersenChargeTimespanTable = pgTable(
   "andersen_charge_timespan_table",
   {
-    id: uuid("id").primaryKey().defaultRandom(),
-    userId: uuid("user_id").references(() => profileTable.id).notNull(),
+    groupId: uuid("group_id").notNull(),
     startTime: timestamp("start_time", { precision: 6, withTimezone: true })
       .notNull(),
     endTime: timestamp("end_time", { precision: 6, withTimezone: true })
       .notNull(),
     averagePrice: doublePrecision("average_price").notNull(),
   },
+  (table) => [
+    primaryKey({ columns: [table.groupId, table.startTime] }),
+  ],
 );
 
 // export const tapoConfigTable = pgTable("tapo_config_table", {

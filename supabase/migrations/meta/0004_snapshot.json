@@ -1,6 +1,6 @@
 {
-  "id": "64f86aa1-c39c-4327-9274-8d2a0994e28c",
-  "prevId": "0d7da618-5643-4ced-a922-3aa3b294037a",
+  "id": "51920d72-a773-4047-85b7-06f4e4c2cb8e",
+  "prevId": "4e3e089a-c427-4075-82db-65c717d19ce0",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -8,15 +8,8 @@
       "name": "andersen_charge_timespan_table",
       "schema": "",
       "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
-        },
-        "user_id": {
-          "name": "user_id",
+        "group_id": {
+          "name": "group_id",
           "type": "uuid",
           "primaryKey": false,
           "notNull": true
@@ -41,55 +34,42 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {
-        "andersen_charge_timespan_table_user_id_profile_id_fk": {
-          "name": "andersen_charge_timespan_table_user_id_profile_id_fk",
-          "tableFrom": "andersen_charge_timespan_table",
-          "tableTo": "profile",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "andersen_charge_timespan_table_group_id_start_time_pk": {
+          "name": "andersen_charge_timespan_table_group_id_start_time_pk",
+          "columns": [
+            "group_id",
+            "start_time"
+          ]
         }
       },
-      "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.andersen_config_table": {
-      "name": "andersen_config_table",
+    "public.andersen_config": {
+      "name": "andersen_config",
       "schema": "",
       "columns": {
-        "id": {
-          "name": "id",
+        "group_id": {
+          "name": "group_id",
           "type": "uuid",
           "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
-        },
-        "user_id": {
-          "name": "user_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "andersen_username": {
           "name": "andersen_username",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "andersen_password": {
           "name": "andersen_password",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "battery_size": {
           "name": "battery_size",
@@ -106,12 +86,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "andersen_config_table_user_id_profile_id_fk": {
-          "name": "andersen_config_table_user_id_profile_id_fk",
-          "tableFrom": "andersen_config_table",
-          "tableTo": "profile",
+        "andersen_config_group_id_group_id_fk": {
+          "name": "andersen_config_group_id_group_id_fk",
+          "tableFrom": "andersen_config",
+          "tableTo": "group",
           "columnsFrom": [
-            "user_id"
+            "group_id"
           ],
           "columnsTo": [
             "id"
@@ -126,8 +106,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.prices": {
-      "name": "prices",
+    "public.group": {
+      "name": "group",
       "schema": "",
       "columns": {
         "id": {
@@ -137,6 +117,45 @@
           "notNull": true,
           "default": "gen_random_uuid()"
         },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "owner_id": {
+          "name": "owner_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "octopus_tariff": {
+          "name": "octopus_tariff",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "group_owner_id_unique": {
+          "name": "group_owner_id_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "owner_id"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.prices": {
+      "name": "prices",
+      "schema": "",
+      "columns": {
         "tariff": {
           "name": "tariff",
           "type": "text",
@@ -164,7 +183,15 @@
       },
       "indexes": {},
       "foreignKeys": {},
-      "compositePrimaryKeys": {},
+      "compositePrimaryKeys": {
+        "prices_tariff_start_pk": {
+          "name": "prices_tariff_start_pk",
+          "columns": [
+            "tariff",
+            "start"
+          ]
+        }
+      },
       "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
@@ -192,27 +219,29 @@
           "primaryKey": false,
           "notNull": true
         },
-        "octopus_account_id": {
-          "name": "octopus_account_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "octopus_account_key": {
-          "name": "octopus_account_key",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "octopus_tariff": {
-          "name": "octopus_tariff",
-          "type": "text",
+        "groupId": {
+          "name": "groupId",
+          "type": "uuid",
           "primaryKey": false,
           "notNull": false
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "profile_groupId_group_id_fk": {
+          "name": "profile_groupId_group_id_fk",
+          "tableFrom": "profile",
+          "tableTo": "group",
+          "columnsFrom": [
+            "groupId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},

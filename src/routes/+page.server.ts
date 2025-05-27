@@ -1,13 +1,11 @@
-import { error } from "@sveltejs/kit";
-import {
-  createNewChargeTimespans,
-  getCarChargeTimespan,
-} from "$lib/data/carChargeTimespan";
-import { getOrCreateCarConfig } from "$lib/data/carConfig";
-
+import { error, redirect } from "@sveltejs/kit";
+import * as andersenConfigDb from "$lib/data/andersenConfig";
+import * as profileDb from "$lib/data/profile";
+import * as pricesDb from "$lib/data/prices";
+import * as carChargeTimespansDb from "$lib/data/andersenChargeTimespan";
 import type { PageServerLoad } from "./$types";
 import { zfd } from "zod-form-data";
-import { getSortedPrices } from "$lib/data/prices";
+import { createNewChargeTimespans } from "../lib/chargeTimespans";
 
 export const load: PageServerLoad = async ({ locals }) => {
   const { session } = await locals.safeGetSession();
@@ -20,21 +18,38 @@ export const load: PageServerLoad = async ({ locals }) => {
     };
   }
 
+  const userProfile = await profileDb.get(session.user.id);
+  if (!userProfile) {
+    console.error("User profile not found, redirecting to profile page");
+    redirect(307, "/profile");
+  }
+
   return {
-    prices: await getSortedPrices(locals),
-    carChargeTimespans: await getCarChargeTimespan(locals),
-    carChargeConfig: await getOrCreateCarConfig(locals),
+    prices: await pricesDb.get(userProfile.group.octopusTariff ?? ""),
+    carChargeTimespans: await carChargeTimespansDb.get(
+      userProfile.group.id,
+    ),
+    carChargeConfig: await andersenConfigDb.get(userProfile.group.id),
   };
 };
 
 export const actions = {
   default: async ({ request, locals }) => {
     const { user } = await locals.safeGetSession();
-    console.info("Car charging request received");
-    const carChargingConfig = await getOrCreateCarConfig(locals);
-    if (!carChargingConfig) {
-      console.error("Car charging config not found");
+
+    if (!user) {
       error(401, "Unauthorized");
+    }
+
+    const userProfile = await profileDb.get(user.id);
+    if (!userProfile) {
+      error(400, "Profile not configured, ensure you have a tariff saved");
+    }
+
+    const carChargingConfig = await andersenConfigDb.get(userProfile.group.id);
+
+    if (!carChargingConfig) {
+      error(404, "Car config not found, cannot create car charging timespans");
     }
 
     const schema = zfd.formData({
@@ -58,7 +73,7 @@ export const actions = {
     try {
       console.log("end date time is: ", data.endTime);
       const timespans = await createNewChargeTimespans(
-        locals,
+        userProfile.group,
         endDateTime,
         data.chargePercent,
       );

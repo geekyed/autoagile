@@ -9,7 +9,7 @@
 	import Hamburger from '$lib/components/custom/Hamburger.svelte';
 
 	let { data: propsData, children } = $props();
-	let { session, supabase, userProfile } = $derived(propsData);
+	let { session, supabase } = $derived(propsData);
 
 	let windowInnerWidth = $state(0)
 
@@ -30,21 +30,20 @@
   <h1 class="flex-grow text-center text-4xl font-semibold">Octomiser</h1>
 	{#if windowInnerWidth > 768}
 		<div class="flex gap-2 items-center">
-			{#if userProfile === null}
+			{#if !session}
 				<Button variant="secondary" href="/auth/login/github">Sign in with GitHub</Button>
 				<Button variant="secondary" href="/auth/login/google">Sign in with Google</Button>
 			{:else}
 				<Button variant="secondary" href="/auth/logout">Logout</Button>
 			{/if}
-			<DarkMode />
+				<DarkMode />
 		</div>
 	{:else}
-	<Hamburger {userProfile}/>
+		<Hamburger {session}/>
 	{/if}
-
 </div>
 
-{#if userProfile && windowInnerWidth>768}
+{#if session && windowInnerWidth > 768}
 	<Navigation/>
 {/if}
 
