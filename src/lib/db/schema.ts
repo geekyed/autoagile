@@ -16,7 +16,7 @@ import {
 } from "drizzle-orm/pg-core";
 
 export const groupTable = pgTable("group", {
-  id: uuid("id").primaryKey().defaultRandom(),
+  id: uuid("id").primaryKey().defaultRandom().notNull(),
   name: text("name").notNull(),
   ownerId: uuid("owner_id").notNull().unique(),
   octopusTariff: text("octopus_tariff"),
