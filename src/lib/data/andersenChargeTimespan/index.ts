@@ -5,10 +5,12 @@ import {
   andersenConfigTable,
 } from "../../db/schema";
 
-export const get = async (id: string): Promise<AndersenChargeTimespan[]> => {
+export const getByGroup = async (
+  groupId: string,
+): Promise<AndersenChargeTimespan[]> => {
   const carChargeTimespans = await db.query.andersenChargeTimespanTable
     .findMany({
-      where: eq(andersenConfigTable.groupId, id),
+      where: eq(andersenConfigTable.groupId, groupId),
     });
 
   if (!carChargeTimespans) {
@@ -25,9 +27,8 @@ export const deleteAll = async (groupId: string) => {
 };
 
 export const insert = async (
-  id: string,
-  timespans: AndersenChargeTimespan[],
+  timespans: PreDBAndersenChargeTimespan[],
 ) => {
-  const toInsert = timespans.map((timespan) => ({ groupId: id, ...timespan }));
-  await db.insert(andersenChargeTimespanTable).values(toInsert);
+  await db.insert(andersenChargeTimespanTable).values(timespans)
+    .onConflictDoNothing();
 };

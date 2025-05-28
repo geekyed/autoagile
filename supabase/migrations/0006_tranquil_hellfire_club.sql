@@ -1,0 +1,1 @@
+CREATE INDEX "group id index" ON "andersen_charge_timespan_table" USING btree ("group_id");

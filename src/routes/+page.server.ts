@@ -26,7 +26,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 
   return {
     prices: await pricesDb.get(userProfile.group.octopusTariff ?? ""),
-    carChargeTimespans: await carChargeTimespansDb.get(
+    carChargeTimespans: await carChargeTimespansDb.getByGroup(
       userProfile.group.id,
     ),
     carChargeConfig: await andersenConfigDb.get(userProfile.group.id),

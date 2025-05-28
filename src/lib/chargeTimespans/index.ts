@@ -33,14 +33,11 @@ export const createNewChargeTimespans = async (
     throw Error(error);
   }
 
-  if (chargeTimespans!.length === 0) {
+  if (!chargeTimespans?.length) {
     return [];
   }
 
-  await carChargeTimespansDb.insert(
-    group.id,
-    chargeTimespans!,
-  );
+  await carChargeTimespansDb.insert(chargeTimespans);
   return chargeTimespans;
 };
 
@@ -51,9 +48,9 @@ const generateCarChargeTimespans = (
   prices: Price[],
 ): {
   error: string | undefined;
-  chargeTimespans: AndersenChargeTimespan[] | undefined;
+  chargeTimespans: PreDBAndersenChargeTimespan[] | undefined;
 } => {
-  const chargeTimespans: AndersenChargeTimespan[] = [];
+  const chargeTimespans: PreDBAndersenChargeTimespan[] = [];
   const slots = calculateNoSlots(
     chargeConfig.batterySize,
     chargeConfig.chargeRate,
@@ -70,6 +67,7 @@ const generateCarChargeTimespans = (
     return {
       error: "Not enough slots available",
       chargeTimespans: [{
+        groupId: chargeConfig.groupId,
         startTime: prices.sort((a, b) =>
           a.start.getTime() - b.start.getTime()
         )[0].start,
@@ -82,7 +80,7 @@ const generateCarChargeTimespans = (
     .slice(0, slots)
     .sort((a, b) => a.start!.getTime() - b.start!.getTime());
 
-  let currentTimespan: AndersenChargeTimespan | undefined;
+  let currentTimespan: PreDBAndersenChargeTimespan | undefined;
   let slotCount = 0;
   for (let i = 0; i < selectedPrices.length; i++) {
     const currentPrice = selectedPrices[i];
@@ -90,6 +88,7 @@ const generateCarChargeTimespans = (
     slotCount++;
     if (!currentTimespan) {
       currentTimespan = {
+        groupId: chargeConfig.groupId,
         startTime: currentPrice.start,
         averagePrice: currentPrice.price,
         endTime: currentPrice.end,

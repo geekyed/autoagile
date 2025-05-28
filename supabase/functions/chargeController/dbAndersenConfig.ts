@@ -1,26 +1,25 @@
 import { supabase } from "../_shared/supabaseAdmin.ts";
 
-export const getAndersenChargeConfig = async (userId: string): Promise<
-  AndersenChargeConfig
+export const getAndersenChargeConfig = async (groupId: string): Promise<
+  AndersenConfig
 > => {
-  const { data: dbChargeConfig, error } = await supabase.from(
-    "andersen_config_table",
+  const { data: config, error } = await supabase.from(
+    "andersen_config",
   )
     .select()
-    .eq("user_id", userId)
+    .eq("group_id", groupId)
     .limit(1)
     .single();
 
   if (error) {
     console.error("Error fetching charge config from database:", error);
-    throw new Error(`Failed to fetch charge config for user ${userId}`);
+    throw new Error(`Failed to fetch charge config for group ${groupId}`);
   }
   return {
-    id: dbChargeConfig.id,
-    userId: dbChargeConfig.user_id,
-    andersenUsername: dbChargeConfig.andersen_username,
-    andersenPassword: dbChargeConfig.andersen_password,
-    batterySize: dbChargeConfig.battery_size,
-    chargeRate: dbChargeConfig.charge_rate,
-  };
+    groupId: config.group_id,
+    andersenUsername: config.andersen_username,
+    andersenPassword: config.andersen_password,
+    batterySize: config.battery_size,
+    chargeRate: config.charge_rate,
+  } as AndersenConfig;
 };
