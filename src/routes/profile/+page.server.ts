@@ -1,5 +1,6 @@
 import { error } from "@sveltejs/kit";
 import { zfd } from "zod-form-data";
+import { z } from "zod";
 import * as profileDb from "$lib/data/profile";
 import * as groupDb from "$lib/data/group";
 import { getTariffCode } from "../../lib/thirdPartyAPIs/octopus.js";
@@ -77,13 +78,15 @@ export const actions = {
     const schema = zfd.formData({
       groupId: zfd.text(),
       groupName: zfd.text(),
-      octopusAccountId: zfd.text(),
-      octopusAPIKey: zfd.text(),
+      octopusAccountId: zfd.text(z.string().optional()),
+      octopusAPIKey: zfd.text(z.string().optional()),
     });
 
     const { data, error: parseError } = schema.safeParse(
       await request.formData(),
     );
+
+    console.log("Form submission received for group", data);
 
     if (parseError) {
       console.error(parseError);
@@ -96,13 +99,23 @@ export const actions = {
       error(403, "You are not the owner of this group");
     }
 
+    let octopusTariff: string | undefined = undefined;
+
+    // Tariff update requested.
+    if (data.octopusAPIKey && data.octopusAccountId) {
+      octopusTariff = await getTariffCode(
+        data.octopusAccountId,
+        data.octopusAPIKey,
+      );
+      // Update other fields not the tariff.
+    } else if (group?.octopusTariff) {
+      octopusTariff = group.octopusTariff;
+    }
+
     const newGroup = {
       name: data.groupName,
       ownerId: user.id,
-      octopusTariff: await getTariffCode(
-        data.octopusAccountId,
-        data.octopusAPIKey,
-      ),
+      octopusTariff: octopusTariff || "", // new group without tariff will be empty string
       id: group?.id || "",
     };
 
