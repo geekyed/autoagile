@@ -47,7 +47,7 @@
           </div>
           <div>
             <Label>Andersen Password</Label>
-            <Input bind:value={andersenPassword} />
+            <Input type="text" style="-webkit-text-security: disc;" bind:value={andersenPassword} />
           </div>
           <div>
             <Label>Charge Rate kW</Label>
