@@ -5,11 +5,13 @@ import {
 } from "drizzle-orm";
 import {
   doublePrecision,
+  index,
   PgColumn,
   pgTable,
   primaryKey,
   text,
   timestamp,
+  unique,
   uuid,
 } from "drizzle-orm/pg-core";
 
@@ -58,6 +60,7 @@ export const pricesTable = pgTable("prices", {
 export const andersenChargeTimespanTable = pgTable(
   "andersen_charge_timespan_table",
   {
+    id: uuid("id").defaultRandom().primaryKey(),
     groupId: uuid("group_id").notNull(),
     startTime: timestamp("start_time", { precision: 6, withTimezone: true })
       .notNull(),
@@ -66,7 +69,9 @@ export const andersenChargeTimespanTable = pgTable(
     averagePrice: doublePrecision("average_price").notNull(),
   },
   (table) => [
-    primaryKey({ columns: [table.groupId, table.startTime] }),
+    index("group id index").on(table.groupId),
+    unique("unique group start").on(table.groupId, table.startTime),
+    unique("unique group end").on(table.groupId, table.endTime),
   ],
 );
 

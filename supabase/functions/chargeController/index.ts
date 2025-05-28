@@ -4,7 +4,7 @@
 
 // Setup type definitions for built-in Supabase Runtime APIs
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
-import { getAndersenChargeTimespans } from "./dbAndersenChargeTimespan.ts";
+import * as andersenChargeTimespanDb from "./dbAndersenChargeTimespan.ts";
 import { getAndersenChargeConfig } from "./dbAndersenConfig.ts";
 import AndersenA2 from "./andersen/AndersenA2.ts";
 import { equalWithFuzziness } from "../_shared/dateTools.ts";
@@ -16,25 +16,36 @@ Deno.serve(async () => {
   const now = new Date();
   deletePrices(now);
 
-  const chargeTimespans = await getAndersenChargeTimespans();
+  const chargeTimespans = await andersenChargeTimespanDb.getAll();
+
+  console.log(`found ${chargeTimespans.length} charge timespans`);
 
   for (const timespan of chargeTimespans) {
     const isStart = equalWithFuzziness(timespan.startTime, now, 5);
     const isEnd = equalWithFuzziness(timespan.endTime, now, 5);
+
+    console.log(
+      `Processing timespan: ${timespan.id}, Start: ${isStart}, End: ${isEnd}`,
+    );
     if (isStart || isEnd) {
       try {
         const { andersenUsername, andersenPassword } =
-          await getAndersenChargeConfig(timespan.userId);
+          await getAndersenChargeConfig(timespan.groupId);
 
         if (!andersenUsername || !andersenPassword) {
           console.error(
-            `Error fetching car charge config from database for user: ${timespan.userId}`,
+            `Error fetching car charge config from database for group: ${timespan.groupId}`,
           );
           return new Response(
             JSON.stringify({ error: "Failed to fetch car charge config" }),
             { status: 500, headers: { "Content-Type": "application/json" } },
           );
         }
+
+        console.log(
+          "Init AndersenA2 group:",
+          timespan.groupId,
+        );
 
         const andersenA2 = new AndersenA2(andersenUsername, andersenPassword);
         await andersenA2.init();
@@ -43,10 +54,11 @@ Deno.serve(async () => {
           await andersenA2.unlock();
         } else {
           await andersenA2.lock();
+          await andersenChargeTimespanDb.deleteById(timespan.id);
         }
       } catch (error) {
         console.error(
-          `Error during AndersenA2 operation ${timespan.userId}, ${timespan.startTime}, ${timespan.endTime}:`,
+          `Error during AndersenA2 operation ${timespan.groupId}, ${timespan.startTime}, ${timespan.endTime}:`,
           error,
         );
         break;

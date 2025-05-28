@@ -28,6 +28,15 @@ interface Price {
 }
 
 interface AndersenChargeTimespan {
+  id: string;
+  groupId: string;
+  startTime: Date;
+  endTime: Date;
+  averagePrice: number;
+}
+
+interface PreDBAndersenChargeTimespan {
+  groupId: string;
   startTime: Date;
   endTime: Date;
   averagePrice: number;

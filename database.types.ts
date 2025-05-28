@@ -39,18 +39,21 @@ export type Database = {
           average_price: number
           end_time: string
           group_id: string
+          id: string
           start_time: string
         }
         Insert: {
           average_price: number
           end_time: string
           group_id: string
+          id?: string
           start_time: string
         }
         Update: {
           average_price?: number
           end_time?: string
           group_id?: string
+          id?: string
           start_time?: string
         }
         Relationships: []
