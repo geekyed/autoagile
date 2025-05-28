@@ -34,6 +34,7 @@
         formData.set('chargeRate', chargeRate.toString());
         return ({result}) => {
           if (result.type === 'success') {
+            alert('Group updated!');
             invalidate("/");
           } else {
             console.error(result.status, result.type);
@@ -46,7 +47,7 @@
           </div>
           <div>
             <Label>Andersen Password</Label>
-            <Input type='password' bind:value={andersenPassword} />
+            <Input bind:value={andersenPassword} />
           </div>
           <div>
             <Label>Charge Rate kW</Label>

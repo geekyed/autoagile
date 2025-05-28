@@ -67,6 +67,7 @@
         return ({result}) => {
           if (result.type === 'success') {
             window.location.reload();
+            alert('Group updated!');
           } else {
             alert('Failed to update group');
           }
@@ -82,7 +83,7 @@
       </div>
       <div>    
         <Label>Octopus API Key</Label>
-        <Input type='password' bind:value={octopusAPIKey} />
+        <Input bind:value={octopusAPIKey} />
       </div>
       <div>
         <Label>Octopus Tariff Code</Label>
