@@ -5,12 +5,9 @@ export const getAndersenChargeConfig = async (groupId: string): Promise<
 > => {
   const { data: config, error } = await supabase.from(
     "andersen_config",
-  )
-    .select()
-    .eq("group_id", groupId)
-    .limit(1)
-    .single();
-
+  ).select(
+    "group_id, andersen_username, andersen_password, battery_size, charge_rate",
+  ).eq("group_id", groupId).single();
   if (error) {
     console.error("Error fetching charge config from database:", error);
     throw new Error(`Failed to fetch charge config for group ${groupId}`);
