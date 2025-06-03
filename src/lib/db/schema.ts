@@ -26,14 +26,35 @@ export const profileTable = pgTable("profile", {
   id: uuid("id").primaryKey().notNull(),
   name: text("name").notNull(),
   email: text("email").notNull(),
-  groupId: uuid("groupId").references((): PgColumn<
+});
+
+export const userGroups = pgTable("user_groups", {
+  userId: uuid("user_id").notNull().references((): PgColumn<
+    ColumnBaseConfig<ColumnDataType, string>
+  > => profileTable.id).primaryKey(),
+  groupId: uuid("group_id").notNull().references((): PgColumn<
     ColumnBaseConfig<ColumnDataType, string>
   > => groupTable.id),
 });
 
 export const profileRelations = relations(profileTable, ({ one }) => ({
+  userGroup: one(userGroups, {
+    fields: [profileTable.id],
+    references: [userGroups.userId],
+  }),
+}));
+
+export const groupRelations = relations(groupTable, ({ many }) => ({
+  userGroups: many(userGroups),
+}));
+
+export const userGroupsRelations = relations(userGroups, ({ one }) => ({
+  user: one(profileTable, {
+    fields: [userGroups.userId],
+    references: [profileTable.id],
+  }),
   group: one(groupTable, {
-    fields: [profileTable.groupId],
+    fields: [userGroups.groupId],
     references: [groupTable.id],
   }),
 }));

@@ -2,6 +2,7 @@ import { error } from "@sveltejs/kit";
 import { zfd } from "zod-form-data";
 import { z } from "zod";
 import * as profileDb from "$lib/data/profile";
+import * as userGroupDb from "$lib/data/userGroup";
 import * as groupDb from "$lib/data/group";
 import { getTariffCode } from "../../lib/thirdPartyAPIs/octopus.js";
 
@@ -42,7 +43,7 @@ export const actions = {
       error(400, parseError?.message);
     }
 
-    console.info("geting profile - Parsed data:", data);
+    console.info("getting profile - Parsed data:", data);
     const profile = await profileDb.get(user.id);
 
     if (profile) console.info("Profile found:", profile);
@@ -56,14 +57,13 @@ export const actions = {
         id: user.id,
         name: data.name,
         email: data.email,
-        groupId: newGroupId,
       });
+      await userGroupDb.upsert(user.id, newGroupId);
     } else {
       await profileDb.upsert({
         id: user.id,
         name: data.name,
         email: data.email,
-        groupId: profile?.group.id || "",
       });
     }
     return { success: true };

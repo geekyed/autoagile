@@ -3,26 +3,25 @@ import { db } from "../../db";
 import { profileTable } from "../../db/schema";
 
 export const get = async (userId: string): Promise<UserProfile | undefined> => {
-  const profile = await db.query.profileTable.findFirst({
+  const profileWithGroup = await db.query.profileTable.findFirst({
     where: eq(profileTable.id, userId),
     with: {
-      group: true,
+      userGroup: {
+        with: {
+          group: true,
+        },
+      },
     },
   });
-  if (!profile) {
-    console.error("Profile not found");
+  if (!profileWithGroup) {
     return undefined;
   }
+
   return {
-    id: profile?.id,
-    name: profile?.name,
-    email: profile?.email,
-    group: {
-      id: profile.group!.id,
-      name: profile?.group!.name,
-      ownerId: profile?.group!.ownerId,
-      octopusTariff: profile?.group?.octopusTariff || "",
-    },
+    id: profileWithGroup.id,
+    name: profileWithGroup.name,
+    email: profileWithGroup.email,
+    group: { ...profileWithGroup.userGroup.group },
   };
 };
 
@@ -30,7 +29,6 @@ interface ProfileToSave {
   id: string;
   name: string;
   email: string;
-  groupId: string;
 }
 
 export const upsert = async (profile: ProfileToSave) => {
@@ -39,7 +37,6 @@ export const upsert = async (profile: ProfileToSave) => {
     set: {
       name: profile.name,
       email: profile.email,
-      groupId: profile.groupId,
     },
   });
 };

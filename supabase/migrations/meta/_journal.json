@@ -50,6 +50,20 @@
       "when": 1748419319730,
       "tag": "0006_tranquil_hellfire_club",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1748704056843,
+      "tag": "0007_first_wallow",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1748704147139,
+      "tag": "0008_demonic_gladiator",
+      "breakpoints": true
     }
   ]
 }

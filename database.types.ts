@@ -135,28 +135,47 @@ export type Database = {
       profile: {
         Row: {
           email: string
-          groupId: string | null
           id: string
           name: string
         }
         Insert: {
           email: string
-          groupId?: string | null
           id: string
           name: string
         }
         Update: {
           email?: string
-          groupId?: string | null
           id?: string
           name?: string
         }
+        Relationships: []
+      }
+      user_groups: {
+        Row: {
+          group_id: string
+          user_id: string
+        }
+        Insert: {
+          group_id: string
+          user_id: string
+        }
+        Update: {
+          group_id?: string
+          user_id?: string
+        }
         Relationships: [
           {
-            foreignKeyName: "profile_groupId_group_id_fk"
-            columns: ["groupId"]
+            foreignKeyName: "user_groups_group_id_group_id_fk"
+            columns: ["group_id"]
             isOneToOne: false
             referencedRelation: "group"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_groups_user_id_profile_id_fk"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profile"
             referencedColumns: ["id"]
           },
         ]
