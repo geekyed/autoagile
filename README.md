@@ -1,38 +1,68 @@
-# sv
+# Working in the project
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+## Functions
 
-## Creating a project
-
-If you're seeing this, you've probably already done this step. Congrats!
-
-```bash
-# create a new project in the current directory
-npx sv create
-
-# create a new project in my-app
-npx sv create my-app
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+Local running of functions
+To run the functions locally, you can use the following command:
 
 ```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+supabase functions serve
 ```
 
-## Building
-
-To create a production version of your app:
+to deploy the functions to your Supabase project, use:
 
 ```bash
-npm run build
+supabase functions deploy
 ```
 
-You can preview the production build with `npm run preview`.
+## Database
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+To make changes to the db, change the schema in `src/lib/db/schema.ts` and then run:
+
+```bash
+bun run db:generate
+```
+
+This will generate the necessary SQL migrations based on your schema changes in `supabase/migrations`.
+
+To apply the migrations to your local database, run:
+
+```bash
+supabase migrations up --local
+```
+
+to push to production, use:
+
+```bash
+supabase migrations up --linked
+```
+
+
+## Sveletekit Project
+
+To develop locally, you can run the SvelteKit development server with:
+
+```bash
+bun install
+bun run dev
+```
+
+to deploy just commit to main or PR a branch to main. The CI will automatically build and deploy your app to production on vercel.
+
+## Environment Variables
+
+you need an env file with the following variables set up:
+
+```env
+GITHUB_CLIENT_ID
+GITHUB_CLIENT_SECRET
+DATABASE_URL
+
+PUBLIC_SUPABASE_URL
+PUBLIC_SUPABASE_ANON_KEY
+
+PROD_PASS
+
+GOOGLE_CLIENT_ID
+GOOGLE_CLIENT_SECRET=
+```
