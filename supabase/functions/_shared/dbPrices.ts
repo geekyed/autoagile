@@ -60,7 +60,7 @@ export const deletePrices = async (
 
   console.log(`deleting price with end: ${flooredEnd}`);
 
-  const { error } = await supabase.from("prices").delete().eq(
+  const { error } = await supabase.from("prices").delete().lt(
     "end",
     flooredEnd.toISOString(),
   );
