@@ -96,6 +96,15 @@ export const andersenChargeTimespanTable = pgTable(
   ],
 );
 
+export const inviteTable = pgTable("invite", {
+  id: uuid("token").primaryKey().defaultRandom(),
+  groupId: uuid("group_id").notNull().references(() => groupTable.id),
+  email: text("email").notNull(),
+  createdAt: timestamp("created_at", { precision: 6, withTimezone: true })
+    .defaultNow()
+    .notNull(),
+});
+
 // export const tapoConfigTable = pgTable("tapo_config_table", {
 //   userId: uuid("user_id").primaryKey().references(() => profileTable.id)
 //     .notNull(),

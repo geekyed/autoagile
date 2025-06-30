@@ -64,6 +64,13 @@
       "when": 1748704147139,
       "tag": "0008_demonic_gladiator",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1751314737714,
+      "tag": "0009_silly_daredevil",
+      "breakpoints": true
     }
   ]
 }
