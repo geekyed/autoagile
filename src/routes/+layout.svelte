@@ -27,7 +27,7 @@
 
 <div class="flex items-center justify-between p-4 gap-4">
   <div class="w-10 sm:w-24"></div>
-  <h1 class="flex-grow text-center text-4xl font-semibold">Octomiser</h1>
+  <h1 class="flex-grow text-center text-4xl font-semibold">Auto Agile</h1>
 	{#if windowInnerWidth > 768}
 		<div class="flex gap-2 items-center">
 			{#if !session}

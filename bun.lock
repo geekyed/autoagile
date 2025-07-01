@@ -2,7 +2,7 @@
   "lockfileVersion": 1,
   "workspaces": {
     "": {
-      "name": "octomiser-supabase",
+      "name": "autoagile",
       "dependencies": {
         "@lucide/svelte": "^0.507.0",
         "@supabase/ssr": "^0.6.1",
