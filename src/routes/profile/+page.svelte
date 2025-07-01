@@ -13,6 +13,7 @@
   let groupName = $state('');
   let octopusAccountId = $state('');
   let octopusAPIKey = $state('');
+  let inviteEmail = $state('');
 
   let editGroup = $state(false);
 
@@ -64,12 +65,12 @@
     <CardHeader>
       <h2 class='text-lg font-semibold'>Group Settings</h2>
     </CardHeader>
-    <CardContent>
-      <div class='flex flex-row text-sm text-muted-foreground gap-5'>
+    <CardContent class='flex flex-col gap-4'>
+      <div class='flex flex-row text-sm text-muted-foreground gap-5 justify-center items-center'>
         <Label>Name: {userProfile?.group.name}</Label>
         <Label>Tariff: {userProfile?.group.octopusTariff}</Label>
         {#if userProfile?.group.ownerId && userProfile?.group.ownerId === session?.user?.id }
-          <Button onclick={() => editGroup = !editGroup}>{ editGroup ? "Hide Group" : "Edit Group"}</Button>
+          <Button variant="secondary" onclick={() => editGroup = !editGroup}>{ editGroup ? "Hide Group" : "Edit Group"}</Button>
         {/if}
       </div>
       {#if editGroup}
@@ -99,6 +100,24 @@
         </div>
           <div>
             <Button type='submit'>{userProfile?.group ? 'Update Group' : 'Create Group'}</Button>
+          </div>
+        </form>
+
+        <form class='flex flex-col gap-2' method="post" action="?/sendInvite" use:enhance={({formData}) => {
+          formData.set('email', inviteEmail);
+          return ({result}) => {
+            if (result.type === 'success') {
+              
+              alert('Invite sent!');
+            } else {
+              alert('Failed to send invite');
+            }
+          };
+        }}>
+          <div class="flex flex-row gap-2 justify-center items-center">
+            <Label class="w-52">Invite Email</Label>
+            <Input bind:value={inviteEmail} />
+            <Button variant="secondary" type='submit'>Send Invite</Button>
           </div>
         </form>
       {/if}
