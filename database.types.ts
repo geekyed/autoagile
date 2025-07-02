@@ -111,6 +111,35 @@ export type Database = {
         }
         Relationships: []
       }
+      invite: {
+        Row: {
+          created_at: string
+          email: string
+          group_id: string
+          token: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          group_id: string
+          token?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          group_id?: string
+          token?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invite_group_id_group_id_fk"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "group"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       prices: {
         Row: {
           end: string
