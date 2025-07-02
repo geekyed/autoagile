@@ -4,7 +4,7 @@ import { userGroups } from "../../db/schema";
 
 export const upsert = async (userId: string, groupId: string) => {
   await db.insert(userGroups).values({ userId, groupId }).onConflictDoUpdate({
-    target: [userGroups.userId, userGroups.groupId],
+    target: [userGroups.userId],
     set: { groupId },
   });
 };
