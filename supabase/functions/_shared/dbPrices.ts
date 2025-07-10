@@ -46,23 +46,14 @@ export const insertPrices = async (prices: Price[]): Promise<void> => {
   }
 };
 
-// floors minutes to the nearest half an hour
-const getMinutes = (minutes: number): number => {
-  return Math.floor(minutes / 30) * 30;
-};
-
 export const deletePrices = async (
   end: Date,
 ): Promise<void> => {
-  const flooredEnd = new Date(end);
-  flooredEnd.setSeconds(0, 0);
-  flooredEnd.setMinutes(getMinutes(end.getMinutes()));
-
-  console.log(`deleting price with end: ${flooredEnd}`);
+  console.log(`deleting price with end: ${end}`);
 
   const { error } = await supabase.from("prices").delete().lt(
     "end",
-    flooredEnd.toISOString(),
+    end.toISOString(),
   );
   if (error) {
     console.error("Error deleting prices from database:", error);
