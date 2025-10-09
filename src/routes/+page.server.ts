@@ -1,11 +1,11 @@
 import { error, redirect } from "@sveltejs/kit";
 import * as andersenConfigDb from "$lib/data/andersenConfig";
 import * as profileDb from "$lib/data/profile";
-import * as pricesDb from "$lib/data/prices";
 import * as carChargeTimespansDb from "$lib/data/andersenChargeTimespan";
 import type { PageServerLoad } from "./$types";
 import { zfd } from "zod-form-data";
 import { createNewChargeTimespans } from "../lib/chargeTimespans";
+import { getPrices } from "../lib/prices";
 
 export const load: PageServerLoad = async ({ locals }) => {
   const { session } = await locals.safeGetSession();
@@ -25,7 +25,7 @@ export const load: PageServerLoad = async ({ locals }) => {
   }
 
   return {
-    prices: await pricesDb.get(userProfile.group.octopusTariff ?? ""),
+    prices: await getPrices(userProfile.group.octopusTariff ?? ""),
     carChargeTimespans: await carChargeTimespansDb.getByGroup(
       userProfile.group.id,
     ),

@@ -19,33 +19,6 @@ export const getPrices = async (tariffCode: string): Promise<Price[]> => {
   return prices;
 };
 
-export const insertPrices = async (prices: Price[]): Promise<void> => {
-  const filteredPrices = prices.filter((price) =>
-    price.end.getTime() > new Date().getTime()
-  );
-  const pricesToInsert: Database["public"]["Tables"]["prices"]["Insert"][] =
-    filteredPrices.map((p) => {
-      return {
-        tariff: p.tariff,
-        price: p.price,
-        start: p.start.toISOString(),
-        end: p.end.toISOString(),
-      };
-    });
-  console.log("Prices to insert:", pricesToInsert);
-
-  const { error } = await supabase
-    .from("prices")
-    .upsert(pricesToInsert, {
-      onConflict: "tariff,start",
-      ignoreDuplicates: true,
-    });
-
-  if (error) {
-    console.error("Error inserting prices into database:", error);
-  }
-};
-
 export const deletePrices = async (
   end: Date,
 ): Promise<void> => {

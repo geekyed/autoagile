@@ -1,25 +1,35 @@
-// import { eq } from 'drizzle-orm'
-// import { db } from './db'
-// import { pricesTable } from './db/schema'
+export const getPrices = async (tariffCode: string): Promise<Price[]> => {
+  console.info(`getting new prices for ${tariffCode}`);
 
-interface MeterPoint {
-  tariff_code: string;
-  valid_from: string;
-  valid_to: string | null;
-}
+  try {
+    const productCode = tariffCode.split("-").slice(2, 6).join("-");
+    console.info(`getting new prices for product code: ${productCode}`);
+    const url =
+      `https://api.octopus.energy/v1/products/${productCode}/electricity-tariffs/${tariffCode}/standard-unit-rates/`;
+    const response = await fetch(url);
 
-interface ElectricityMeterPoint {
-  mpan: string;
-  agreements: MeterPoint[];
-}
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
 
-interface Property {
-  electricity_meter_points: ElectricityMeterPoint[];
-}
+    const rates = await response.json();
+    if (rates.results.length < 1) return [];
 
-interface AccountData {
-  properties: Property[];
-}
+    return rates.results.map((rate: StandardUnitRate): Price => ({
+      start: new Date(rate.valid_from),
+      end: new Date(rate.valid_to),
+      price: rate.value_inc_vat,
+      tariff: tariffCode,
+    }));
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error("Error fetching account data:", error.message);
+    } else {
+      console.error("Error fetching account data:", error);
+    }
+    return Promise.reject(new Error("error fetching rates"));
+  }
+};
 
 export const getTariffCode = async (
   accountId: string,
