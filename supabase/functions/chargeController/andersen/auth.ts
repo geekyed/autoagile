@@ -3,7 +3,8 @@ import {
   CognitoUser,
   CognitoUserPool,
   CognitoUserSession,
-} from "npm:amazon-cognito-identity-js";
+} from "amazon-cognito-identity-js";
+
 export const graphqlProd = "https://graphql.andersen-ev.com";
 
 const getUsername = async (email: string): Promise<string> => {
@@ -18,7 +19,7 @@ const getUsername = async (email: string): Promise<string> => {
   return ((await usernameResponse.json()) as { username: string }).username;
 };
 
-const asyncAuthenticateUser = async (
+const authenticateUser = (
   cognitoUser: CognitoUser,
   cognitoAuthenticationDetails: AuthenticationDetails,
 ): Promise<CognitoUserSession> => {
@@ -45,7 +46,7 @@ export const signIn = async (
     Pool: cognitoUserPool,
   });
 
-  const result = await asyncAuthenticateUser(
+  const result = await authenticateUser(
     cognitoUser,
     cognitoAuthenticationDetails,
   );

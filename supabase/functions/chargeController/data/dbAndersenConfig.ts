@@ -1,4 +1,4 @@
-import { supabase } from "../_shared/supabaseAdmin.ts";
+import { supabase } from "./supabaseAdmin.ts";
 
 export const getAndersenChargeConfig = async (groupId: string): Promise<
   AndersenConfig

@@ -1,10 +1,10 @@
 import { graphqlProd, signIn } from "./auth.ts";
-import { sendGraphQLQuery } from "./graphQl.ts";
 import {
   getCurrentUserDevices,
   getDeviceStatusSimple,
   runAEVCommand,
-} from "./queries.ts";
+  sendGraphQLQuery,
+} from "./graphQl.ts";
 
 export default class AndersenA2 {
   username: string;
