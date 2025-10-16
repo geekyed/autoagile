@@ -1,10 +1,19 @@
 import { graphqlProd, signIn } from "./auth.ts";
-import { sendGraphQLQuery } from "./graphQl.ts";
 import {
   getCurrentUserDevices,
   getDeviceStatusSimple,
   runAEVCommand,
-} from "./queries.ts";
+  sendGraphQLQuery,
+} from "./graphQl.ts";
+
+interface SimpleStatus {
+  id: string;
+  online: boolean;
+  evseState: number;
+  sysSchEnabled: boolean;
+  sysUserLock: boolean;
+  sysScheduleLock: string;
+}
 
 export default class AndersenA2 {
   username: string;
