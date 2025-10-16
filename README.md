@@ -37,6 +37,9 @@ to push to production, use:
 supabase migrations up --linked
 ```
 
+To Generate types for the db in the fucnitons folder:
+
+```bun run db::types```
 
 ## Sveletekit Project
 

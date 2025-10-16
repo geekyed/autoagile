@@ -6,6 +6,15 @@ import {
   sendGraphQLQuery,
 } from "./graphQl.ts";
 
+interface SimpleStatus {
+  id: string;
+  online: boolean;
+  evseState: number;
+  sysSchEnabled: boolean;
+  sysUserLock: boolean;
+  sysScheduleLock: string;
+}
+
 export default class AndersenA2 {
   username: string;
   password: string;

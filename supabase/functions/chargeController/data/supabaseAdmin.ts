@@ -1,5 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
-import { Database } from "../../../../database.types.ts";
+import { Database } from "./database.types.d.ts";
 
 export const supabase = createClient<Database>(
   Deno.env.get("SUPABASE_URL")!,

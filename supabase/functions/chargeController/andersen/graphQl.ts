@@ -1,5 +1,25 @@
 import { gql, request, RequestDocument } from "graphql-request";
 
+interface SimpleStatus {
+  id: string;
+  online: boolean;
+  evseState: number;
+  sysSchEnabled: boolean;
+  sysUserLock: boolean;
+  sysScheduleLock: string;
+}
+
+interface AndersenDevice {
+  id: string;
+}
+
+interface AndersenResponse {
+  getCurrentUserDevices: AndersenDevice[];
+  getDevice: {
+    deviceStatus: SimpleStatus;
+  };
+}
+
 export const sendGraphQLQuery = async (
   graphqlProd: string,
   token: string,

@@ -13,7 +13,8 @@
 		"format": "prettier --write .",
 		"lint": "prettier --check . && eslint .",
 		"db::generate": "drizzle-kit generate",
-		"db::push": "drizzle-kit push"
+		"db::push": "drizzle-kit push",
+		"db::types": "supabase gen types typescript --db-url postgresql://postgres:postgres@127.0.0.1:54322/postgres >  ./supabase/functions/chargeController/data/database.types.d.ts"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^1.2.5",

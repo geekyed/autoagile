@@ -1,3 +1,8 @@
 {
-  "imports": {}
+	"imports": {
+		"@supabase/functions-js": "jsr:@supabase/functions-js@^2.5.0",
+		"@supabase/supabase-js": "jsr:@supabase/supabase-js@^2.58.0",
+		"amazon-cognito-identity-js": "npm:amazon-cognito-identity-js@^6.3.15",
+		"graphql-request": "npm:graphql-request@^7.2.0"
+	}
 }

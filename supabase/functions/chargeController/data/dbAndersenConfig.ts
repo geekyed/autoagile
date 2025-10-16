@@ -1,5 +1,13 @@
 import { supabase } from "./supabaseAdmin.ts";
 
+interface AndersenConfig {
+  groupId: string;
+  andersenUsername: string;
+  andersenPassword: string;
+  batterySize: number;
+  chargeRate: number;
+}
+
 export const getAndersenChargeConfig = async (groupId: string): Promise<
   AndersenConfig
 > => {
