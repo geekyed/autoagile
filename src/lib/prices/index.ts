@@ -9,7 +9,7 @@ export const getPrices = async (tariff: string): Promise<Price[]> => {
   console.log(
     `found ${storedPrices.length} prices in db for tariff: ${tariff}`,
   );
-  if (storedPrices.length >= numPricesAfter4pm) return storedPrices;
+  if (storedPrices.length > numPricesAfter4pm) return storedPrices;
 
   const prices = await octopus.getPrices(tariff);
   if (prices.length > 0) await dbPrices.insertPrices(prices);
