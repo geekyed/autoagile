@@ -11,7 +11,7 @@ export const getPrices = async (tariff: string): Promise<Price[]> => {
   );
   if (storedPrices.length > numPricesAfter4pm) return storedPrices;
 
-  const prices = await octopus.getPrices(tariff);
+  const prices = (await octopus.getPrices(tariff)).filter(price => price.end > new Date());
   if (prices.length > 0) await dbPrices.insertPrices(prices);
   return prices;
 };
