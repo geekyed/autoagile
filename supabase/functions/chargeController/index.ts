@@ -1,14 +1,21 @@
-// Follow this setup guide to integrate the Deno language server with your editor:
-// https://deno.land/manual/getting_started/setup_your_environment
-// This enables autocomplete, go to definition, etc.
-
-// Setup type definitions for built-in Supabase Runtime APIs
-import "jsr:@supabase/functions-js/edge-runtime.d.ts";
-import * as andersenChargeTimespanDb from "./dbAndersenChargeTimespan.ts";
-import { getAndersenChargeConfig } from "./dbAndersenConfig.ts";
+import "@supabase/functions-js";
+import * as andersenChargeTimespanDb from "./data/dbAndersenChargeTimespan.ts";
+import { getAndersenChargeConfig } from "./data/dbAndersenConfig.ts";
 import AndersenA2 from "./andersen/AndersenA2.ts";
-import { equalWithFuzziness } from "../_shared/dateTools.ts";
-import { deletePrices } from "../_shared/dbPrices.ts";
+import { deletePrices } from "./data/dbPrices.ts";
+
+const equalWithFuzziness = (
+  date1: Date | undefined,
+  date2: Date | undefined,
+  fuzzinessInMinutes: number,
+) => {
+  if (!date1 && !date2) return true;
+  if (!date1 || !date2) return false;
+  const timeDifference = Math.abs(date1.getTime() - date2.getTime());
+  const fuzzinessInMilliseconds = fuzzinessInMinutes * 60 * 1000;
+
+  return timeDifference <= fuzzinessInMilliseconds;
+};
 
 Deno.serve(async () => {
   console.log("Function 'chargeController' invoked");

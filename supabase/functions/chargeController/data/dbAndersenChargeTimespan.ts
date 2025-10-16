@@ -1,4 +1,12 @@
-import { supabase } from "../_shared/supabaseAdmin.ts";
+import { supabase } from "./supabaseAdmin.ts";
+
+interface AndersenChargeTimespan {
+  id: string;
+  groupId: string;
+  startTime: Date;
+  endTime: Date;
+  averagePrice: number;
+}
 
 export const getAll = async (): Promise<
   AndersenChargeTimespan[]
