@@ -4,7 +4,9 @@ import { z } from "zod";
 import * as profileDb from "$lib/data/profile";
 import * as userGroupDb from "$lib/data/userGroup";
 import * as groupDb from "$lib/data/group";
+import * as inviteDb from "$lib/data/invite";
 import { getTariffCode } from "../../lib/thirdPartyAPIs/octopus.js";
+import { sendEmail } from "./sendEmail.js";
 
 export const load = async ({ locals }) => {
   console.info("load running");
@@ -20,6 +22,57 @@ export const load = async ({ locals }) => {
 };
 
 export const actions = {
+  sendInvite: async ({ request, locals }) => {
+    console.info("Form submission received for invite");
+
+    const { user } = await locals.safeGetSession();
+
+    if (!user) {
+      error(401, "Unauthorized");
+    }
+
+    const profile = await profileDb.get(user.id);
+
+    if (!profile || !profile.group?.id) {
+      error(
+        400,
+        "You must have a group and be the owner of it to send invites",
+      );
+    }
+
+    if (!profile.group?.ownerId || profile.group.ownerId !== user.id) {
+      error(
+        403,
+        "You are not the owner of this group, only owners can send invites",
+      );
+    }
+
+    const schema = zfd.formData({
+      email: z.string().email(),
+    });
+
+    const { data: parseResponse, error: parseError } = schema.safeParse(
+      await request.formData(),
+    );
+
+    if (parseError || !parseResponse) {
+      console.error(parseError);
+      error(400, parseError?.message);
+    }
+
+    const invite = { email: parseResponse.email, groupId: profile.group.id };
+    //TODO needs a try catch
+    const token = await inviteDb.insert(invite);
+
+    if (token === '') {
+      console.error('failed to store invite', invite)
+      error(500, 'failed to store invite')
+    }
+
+    const { emailError } = await sendEmail(profile.name, invite.email, token);
+
+    if (emailError) error(500, emailError.message);
+  },
   saveProfile: async ({ request, locals }) => {
     console.info("Form submission received");
 
