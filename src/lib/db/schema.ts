@@ -97,9 +97,9 @@ export const andersenChargeTimespanTable = pgTable(
 );
 
 export const inviteTable = pgTable("invite", {
-  id: uuid("token").primaryKey().defaultRandom(),
+  email: text("email").primaryKey().notNull(),
+  id: uuid("token").defaultRandom(),
   groupId: uuid("group_id").notNull().references(() => groupTable.id),
-  email: text("email").notNull(),
   createdAt: timestamp("created_at", { precision: 6, withTimezone: true })
     .defaultNow()
     .notNull(),
