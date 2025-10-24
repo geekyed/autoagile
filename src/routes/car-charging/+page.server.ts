@@ -15,7 +15,7 @@ export const load = async ({ locals }) => {
     error(401, "Unauthorized");
   }
 
-  const profile = await profileDb.get(user.id)
+  const profile = await profileDb.get(user.id);
   if (profile == undefined) return { isReadOnly: true, carChargingConfig: undefined }
 
   return {
