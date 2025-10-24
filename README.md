@@ -37,7 +37,6 @@ to push to production, use:
 supabase migrations up --linked
 ```
 
-
 ## Sveletekit Project
 
 To develop locally, you can run the SvelteKit development server with:

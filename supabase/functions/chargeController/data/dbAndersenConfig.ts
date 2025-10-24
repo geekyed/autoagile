@@ -1,4 +1,4 @@
-import { supabase } from "./supabaseAdmin.ts";
+import { supabase } from './supabaseAdmin.ts';
 
 interface AndersenConfig {
   groupId: string;
@@ -8,16 +8,14 @@ interface AndersenConfig {
   chargeRate: number;
 }
 
-export const getAndersenChargeConfig = async (groupId: string): Promise<
-  AndersenConfig
-> => {
-  const { data: config, error } = await supabase.from(
-    "andersen_config",
-  ).select(
-    "group_id, andersen_username, andersen_password, battery_size, charge_rate",
-  ).eq("group_id", groupId).single();
+export const getAndersenChargeConfig = async (groupId: string): Promise<AndersenConfig> => {
+  const { data: config, error } = await supabase
+    .from('andersen_config')
+    .select('group_id, andersen_username, andersen_password, battery_size, charge_rate')
+    .eq('group_id', groupId)
+    .single();
   if (error) {
-    console.error("Error fetching charge config from database:", error);
+    console.error('Error fetching charge config from database:', error);
     throw new Error(`Failed to fetch charge config for group ${groupId}`);
   }
   return {
@@ -25,6 +23,6 @@ export const getAndersenChargeConfig = async (groupId: string): Promise<
     andersenUsername: config.andersen_username,
     andersenPassword: config.andersen_password,
     batterySize: config.battery_size,
-    chargeRate: config.charge_rate,
+    chargeRate: config.charge_rate
   } as AndersenConfig;
 };

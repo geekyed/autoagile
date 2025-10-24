@@ -1,4 +1,4 @@
-import { gql, request, RequestDocument } from "graphql-request";
+import { gql, request, RequestDocument } from 'graphql-request';
 
 interface SimpleStatus {
   id: string;
@@ -24,19 +24,14 @@ export const sendGraphQLQuery = async (
   graphqlProd: string,
   token: string,
   query: RequestDocument,
-  variables?: object,
+  variables?: object
 ): Promise<AndersenResponse> => {
   try {
-    const response = await request<AndersenResponse>(
-      graphqlProd,
-      query,
-      variables,
-      {
-        Authorization: `Bearer ${token}`,
-      },
-    );
+    const response = await request<AndersenResponse>(graphqlProd, query, variables, {
+      Authorization: `Bearer ${token}`
+    });
 
-    console.log("GraphQL response:", response);
+    console.log('GraphQL response:', response);
     return response;
   } catch (error) {
     let message;
@@ -47,85 +42,89 @@ export const sendGraphQLQuery = async (
   }
 };
 
-export const getCurrentUserDevices = gql`query getCurrentUserDevices {
-  getCurrentUserDevices {
-    id
-    name
-    deviceInfo {
+export const getCurrentUserDevices = gql`
+  query getCurrentUserDevices {
+    getCurrentUserDevices {
       id
-      friendlyName
-    }
-    deviceStatus {
-      id
-      cfgCTConfig
-      sysFwVersion
-    }
-  }
-}`;
-
-export const getDevice = gql`query getDevice($id: ID!) {
-  getDevice(id: $id) {
-    id
-    name
-    last_ip_address
-    deviceStatus {
-      id
-      evseState
-      sysFwVersion
-      sysSchEnabled
-      sysUserLock
-      sysScheduleLock
-      sysSch0
-      sysSch1
-      sysSch2
-      sysSch3
-      sysSch4
-      cfgCTConfig
-      scheduleSlotsArray {
-        startHour
-        startMinute
-        endHour
-        endMinute
-        enabled
-        dayMap {
-          monday
-          tuesday
-          wednesday
-          thursday
-          friday
-          saturday
-          sunday
-        }
+      name
+      deviceInfo {
+        id
+        friendlyName
+      }
+      deviceStatus {
+        id
+        cfgCTConfig
+        sysFwVersion
       }
     }
-    deviceInfo {
+  }
+`;
+
+export const getDevice = gql`
+  query getDevice($id: ID!) {
+    getDevice(id: $id) {
       id
-      currency
-      enableThreePhaseMultiplier
-      friendlyName
-      locationLongitude
-      locationLatitude
-      schedule0Name
-      schedule1Name
-      schedule2Name
-      schedule3Name
-      schedule4Name
-      address
-      addressPlace
-      addressDistrict
-      addressPostcode
-      addressCountry
-      solarOverrideStart
-      notifyRcmErrorEnabled
-      notifyWeeklyReportEnabled
-      notifyDeviceOfflineEnabled
-      purpose
-      solarChargeAlways
-      timeZoneRegion
-      userLock
+      name
+      last_ip_address
+      deviceStatus {
+        id
+        evseState
+        sysFwVersion
+        sysSchEnabled
+        sysUserLock
+        sysScheduleLock
+        sysSch0
+        sysSch1
+        sysSch2
+        sysSch3
+        sysSch4
+        cfgCTConfig
+        scheduleSlotsArray {
+          startHour
+          startMinute
+          endHour
+          endMinute
+          enabled
+          dayMap {
+            monday
+            tuesday
+            wednesday
+            thursday
+            friday
+            saturday
+            sunday
+          }
+        }
+      }
+      deviceInfo {
+        id
+        currency
+        enableThreePhaseMultiplier
+        friendlyName
+        locationLongitude
+        locationLatitude
+        schedule0Name
+        schedule1Name
+        schedule2Name
+        schedule3Name
+        schedule4Name
+        address
+        addressPlace
+        addressDistrict
+        addressPostcode
+        addressCountry
+        solarOverrideStart
+        notifyRcmErrorEnabled
+        notifyWeeklyReportEnabled
+        notifyDeviceOfflineEnabled
+        purpose
+        solarChargeAlways
+        timeZoneRegion
+        userLock
+      }
     }
   }
-}`;
+`;
 
 // const getDeviceChargeRates = gql`query getDeviceChargeRates($id: ID!) {
 //   getDevice(id: $id) {
@@ -325,19 +324,13 @@ export const getDevice = gql`query getDevice($id: ID!) {
 //     unclaimDevice(deviceId: $deviceId)
 // }`
 
-export const runAEVCommand = gql`mutation runAEVCommand(
-  $deviceId: ID!
-  $functionName: String!
-  $params: String
-) {
-  runAEVCommand(
-    deviceId: $deviceId
-    functionName: $functionName
-    params: $params
-  ) {
-    return_value
+export const runAEVCommand = gql`
+  mutation runAEVCommand($deviceId: ID!, $functionName: String!, $params: String) {
+    runAEVCommand(deviceId: $deviceId, functionName: $functionName, params: $params) {
+      return_value
+    }
   }
-}`;
+`;
 
 // const upsertAccount = gql`mutation upsertAccount($firstName: String, $lastName: String) {
 //   upsertAccount(firstName: $firstName, lastName: $lastName)
@@ -418,126 +411,130 @@ export const runAEVCommand = gql`mutation runAEVCommand(
 //   }
 // }`
 
-export const getDeviceStatusSimple = gql`query getDeviceStatusSimple($id: ID!) {
-  getDevice(id: $id) {
-    deviceStatus {
-      id
-      online
-      evseState
-      sysSchEnabled
-      sysUserLock
-      sysScheduleLock
+export const getDeviceStatusSimple = gql`
+  query getDeviceStatusSimple($id: ID!) {
+    getDevice(id: $id) {
+      deviceStatus {
+        id
+        online
+        evseState
+        sysSchEnabled
+        sysUserLock
+        sysScheduleLock
+      }
     }
   }
-}`;
+`;
 
-export const getDeviceStatus = gql`query getDeviceStatus($id: ID!) {
-  getDevice(id: $id) {
-    deviceStatus {
-      id
-      konnectSerial
-      online
-      lastEvent
-      lastEventAge
-      evseState
-      evseResponseTime
-      evseChargeAmpCurrentLimit
-      sysSchEnabled
-      sysUserLock
-      sysScheduleLock
-      sysRssi
-      sysSSID
-      sysLan
-      sysTemperature
-      sysFreeMemory
-      sysRuntime
-      sysFwVersion
-      sysHwVersion
-      evseFwVersion
-      evseHwVersion
-      sysBootup
-      sysOs
-      sysProductId
-      sysProductName
-      sysOtaUpdate
-      sysRcmUserCleared
-      sysButton
-      sysFaultCode
-      sysVoltageA
-      sysVoltageB
-      sysVoltageC
-      sysAmpA
-      sysAmpB
-      sysAmpC
-      sysPowerA
-      sysPowerB
-      sysPowerC
-      sysPhase
-      sysSolarCT
-      sysGridCT
-      sysAdaptiveFuse
-      sysTime
-      sysSch0
-      sysSch1
-      sysSch2
-      sysSch3
-      sysSch4
-      sysFaultCode
-      cfgPENEarthConnected
-      cfgDebugEnable
-      cfgChargeAmpMax
-      cfgChargeAmpMin
-      cfgDSTActive
-      sysChargingEnabled
-      sysSchEnabled
-      sysSchSet
-      sysUserLock
-      sysScheduleLock
-      sysSolarPower
-      sysGridPower
-      sysChargePower
-      sysSolarEnergyDelta
-      sysGridEnergyDelta
-      cfgChargeAmpMin
-      cfgChargeAmpMax
+export const getDeviceStatus = gql`
+  query getDeviceStatus($id: ID!) {
+    getDevice(id: $id) {
+      deviceStatus {
+        id
+        konnectSerial
+        online
+        lastEvent
+        lastEventAge
+        evseState
+        evseResponseTime
+        evseChargeAmpCurrentLimit
+        sysSchEnabled
+        sysUserLock
+        sysScheduleLock
+        sysRssi
+        sysSSID
+        sysLan
+        sysTemperature
+        sysFreeMemory
+        sysRuntime
+        sysFwVersion
+        sysHwVersion
+        evseFwVersion
+        evseHwVersion
+        sysBootup
+        sysOs
+        sysProductId
+        sysProductName
+        sysOtaUpdate
+        sysRcmUserCleared
+        sysButton
+        sysFaultCode
+        sysVoltageA
+        sysVoltageB
+        sysVoltageC
+        sysAmpA
+        sysAmpB
+        sysAmpC
+        sysPowerA
+        sysPowerB
+        sysPowerC
+        sysPhase
+        sysSolarCT
+        sysGridCT
+        sysAdaptiveFuse
+        sysTime
+        sysSch0
+        sysSch1
+        sysSch2
+        sysSch3
+        sysSch4
+        sysFaultCode
+        cfgPENEarthConnected
+        cfgDebugEnable
+        cfgChargeAmpMax
+        cfgChargeAmpMin
+        cfgDSTActive
+        sysChargingEnabled
+        sysSchEnabled
+        sysSchSet
+        sysUserLock
+        sysScheduleLock
+        sysSolarPower
+        sysGridPower
+        sysChargePower
+        sysSolarEnergyDelta
+        sysGridEnergyDelta
+        cfgChargeAmpMin
+        cfgChargeAmpMax
 
-      solarMaxGridChargePercent
-      solarChargeAlways
-      solarOverride
-      cfgAFEnable
-      cfgAFAmpMax
-      cfgCTConfig
-      chargeStatus {
-        start
-        chargeEnergyTotal
-        solarEnergyTotal
-        gridEnergyTotal
-        chargePower
-        chargePowerMax
-        solarPower
-        gridPower
-        duration
-      }
-      scheduleSlotsArray {
-        startHour
-        startMinute
-        endHour
-        endMinute
-        enabled
-        dayMap {
-          monday
-          tuesday
-          wednesday
-          thursday
-          friday
-          saturday
-          sunday
+        solarMaxGridChargePercent
+        solarChargeAlways
+        solarOverride
+        cfgAFEnable
+        cfgAFAmpMax
+        cfgCTConfig
+        chargeStatus {
+          start
+          chargeEnergyTotal
+          solarEnergyTotal
+          gridEnergyTotal
+          chargePower
+          chargePowerMax
+          solarPower
+          gridPower
+          duration
         }
+        scheduleSlotsArray {
+          startHour
+          startMinute
+          endHour
+          endMinute
+          enabled
+          dayMap {
+            monday
+            tuesday
+            wednesday
+            thursday
+            friday
+            saturday
+            sunday
+          }
+        }
+        sysSchDSORandom
       }
-      sysSchDSORandom      
     }
   }
-}`;
+`;
 
 // const deviceStatusUpdated = gql`subscription deviceStatusUpdated($id: ID!) {
 //   deviceStatusUpdated(id: $id) {

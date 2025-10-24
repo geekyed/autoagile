@@ -1,12 +1,7 @@
 import { Resend } from 'resend';
 import { RESEND_API_KEY } from '$env/static/private';
 
-export const sendEmail = async (
-  inviterName: string,
-  inviteeEmail: string,
-  token: string
-) => {
-
+export const sendEmail = async (inviterName: string, inviteeEmail: string, token: string) => {
   // --- COLOR MAPPING (HSL to Hex for dark theme) ---
   // --background: 224 71.4% 4.1%   -> #0A0A0B
   // --foreground: 210 20% 98%      -> #FAFAFC
@@ -16,9 +11,9 @@ export const sendEmail = async (
 
   const background_color = '#0A0A0B'; // Corresponds to --background / --card
   const foreground_color = '#FAFAFC'; // Corresponds to --foreground / --card-foreground
-  const primary_color = '#8B30D9';    // Corresponds to --primary (button background, highlights)
-  const secondary_color = '#292D39';  // Corresponds to --secondary / --border
-  const text_color = '#979CA9';       // Corresponds to --muted-foreground (body text)
+  const primary_color = '#8B30D9'; // Corresponds to --primary (button background, highlights)
+  const secondary_color = '#292D39'; // Corresponds to --secondary / --border
+  const text_color = '#979CA9'; // Corresponds to --muted-foreground (body text)
 
   // 1. Construct the unique sign-up link
   const signupLink = `https://autoagile.dev/signup?token=${token}`;
@@ -124,7 +119,7 @@ Ed at Auto Agile
     to: [inviteeEmail],
     subject: `${inviterName} has invited you to Auto Agile!`,
     html: htmlContent,
-    text: textContent,
+    text: textContent
   };
 
   const resend = new Resend(RESEND_API_KEY);
@@ -132,4 +127,4 @@ Ed at Auto Agile
   const { error: emailError } = await resend.emails.send(email);
 
   return { emailError };
-}
+};

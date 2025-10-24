@@ -1,14 +1,13 @@
-<script lang='ts'>
-	import { Button } from '$lib/components/ui/button';
-	import { Card, CardContent, CardHeader } from '$lib/components/ui/card';
-	import Input from '$lib/components/ui/input/input.svelte';
-	import { Label } from '$lib/components/ui/label';
+<script lang="ts">
+  import { Button } from '$lib/components/ui/button';
+  import { Card, CardContent, CardHeader } from '$lib/components/ui/card';
+  import Input from '$lib/components/ui/input/input.svelte';
+  import { Label } from '$lib/components/ui/label';
   import { enhance } from '$app/forms';
-	import { invalidate } from '$app/navigation';
+  import { invalidate } from '$app/navigation';
 
-  const { data } = $props()
+  const { data } = $props();
   const { carChargingConfig, isReadOnly } = $derived(data);
-
 
   let andersenUsername = $state('');
   let andersenPassword = $state('');
@@ -24,48 +23,60 @@
     }
   });
 </script>
-<div class='flex flex-col items-center gap-5'>
-  <Card class='w-full max-w-xl'>
+
+<div class="flex flex-col items-center gap-5">
+  <Card class="w-full max-w-xl">
     <CardContent>
       {#if isReadOnly}
-        <p class='pb-5'>You're not authorised to access car charging config, please speak to the group owner.</p>
+        <p class="pb-5">
+          You're not authorised to access car charging config, please speak to the group owner.
+        </p>
       {/if}
-        <form class='flex flex-col gap-2' method="post" use:enhance={({formData}) => {
+      <form
+        class="flex flex-col gap-2"
+        method="post"
+        use:enhance={({ formData }) => {
           formData.set('andersenUsername', andersenUsername);
           formData.set('andersenPassword', andersenPassword);
           formData.set('batterySize', batterySize.toString());
           formData.set('chargeRate', chargeRate.toString());
-          return ({result}) => {
+          return ({ result }) => {
             if (result.type === 'success') {
               alert('Group updated!');
-              invalidate("/");
+              invalidate('/');
             } else {
               console.error(result.status, result.type);
             }
           };
-        }}>
+        }}
+      >
+        <div>
+          <Label>Andersen Username</Label>
+          <Input disabled={isReadOnly} bind:value={andersenUsername} />
+        </div>
+        <div>
+          <Label>Andersen Password</Label>
+          <Input
+            disabled={isReadOnly}
+            type="text"
+            style="-webkit-text-security: disc;"
+            bind:value={andersenPassword}
+          />
+        </div>
+        <div>
+          <Label>Charge Rate kW</Label>
+          <Input disabled={isReadOnly} bind:value={chargeRate} />
+        </div>
+        <div>
+          <Label>Battery Size kWh</Label>
+          <Input disabled={isReadOnly} bind:value={batterySize} />
+        </div>
+        {#if !isReadOnly}
           <div>
-            <Label>Andersen Username</Label>
-            <Input disabled={isReadOnly} bind:value={andersenUsername} />
+            <Button type="submit">{carChargingConfig ? 'Update' : 'Create Config'}</Button>
           </div>
-          <div>
-            <Label>Andersen Password</Label>
-            <Input disabled={isReadOnly} type="text" style="-webkit-text-security: disc;" bind:value={andersenPassword} />
-          </div>
-          <div>
-            <Label>Charge Rate kW</Label>
-            <Input disabled={isReadOnly} bind:value={chargeRate} />
-          </div>
-          <div>
-            <Label>Battery Size kWh</Label>
-            <Input disabled={isReadOnly} bind:value={batterySize} />
-          </div>
-          {#if !isReadOnly}
-            <div>
-              <Button type='submit'>{carChargingConfig ? 'Update' : 'Create Config'}</Button>
-            </div>
-          {/if}
-        </form>
+        {/if}
+      </form>
     </CardContent>
   </Card>
 </div>

@@ -1,13 +1,13 @@
-import "@supabase/functions-js";
-import * as andersenChargeTimespanDb from "./data/dbAndersenChargeTimespan.ts";
-import { getAndersenChargeConfig } from "./data/dbAndersenConfig.ts";
-import AndersenA2 from "./andersen/AndersenA2.ts";
-import { deletePrices } from "./data/dbPrices.ts";
+import '@supabase/functions-js';
+import * as andersenChargeTimespanDb from './data/dbAndersenChargeTimespan.ts';
+import { getAndersenChargeConfig } from './data/dbAndersenConfig.ts';
+import AndersenA2 from './andersen/AndersenA2.ts';
+import { deletePrices } from './data/dbPrices.ts';
 
 const equalWithFuzziness = (
   date1: Date | undefined,
   date2: Date | undefined,
-  fuzzinessInMinutes: number,
+  fuzzinessInMinutes: number
 ) => {
   if (!date1 && !date2) return true;
   if (!date1 || !date2) return false;
@@ -31,28 +31,24 @@ Deno.serve(async () => {
     const isStart = equalWithFuzziness(timespan.startTime, now, 5);
     const isEnd = equalWithFuzziness(timespan.endTime, now, 5);
 
-    console.log(
-      `Processing timespan: ${timespan.id}, Start: ${isStart}, End: ${isEnd}`,
-    );
+    console.log(`Processing timespan: ${timespan.id}, Start: ${isStart}, End: ${isEnd}`);
     if (isStart || isEnd) {
       try {
-        const { andersenUsername, andersenPassword } =
-          await getAndersenChargeConfig(timespan.groupId);
+        const { andersenUsername, andersenPassword } = await getAndersenChargeConfig(
+          timespan.groupId
+        );
 
         if (!andersenUsername || !andersenPassword) {
           console.error(
-            `Error fetching car charge config from database for group: ${timespan.groupId}`,
+            `Error fetching car charge config from database for group: ${timespan.groupId}`
           );
-          return new Response(
-            JSON.stringify({ error: "Failed to fetch car charge config" }),
-            { status: 500, headers: { "Content-Type": "application/json" } },
-          );
+          return new Response(JSON.stringify({ error: 'Failed to fetch car charge config' }), {
+            status: 500,
+            headers: { 'Content-Type': 'application/json' }
+          });
         }
 
-        console.log(
-          "Init AndersenA2 group:",
-          timespan.groupId,
-        );
+        console.log('Init AndersenA2 group:', timespan.groupId);
 
         const andersenA2 = new AndersenA2(andersenUsername, andersenPassword);
         await andersenA2.init();
@@ -66,17 +62,16 @@ Deno.serve(async () => {
       } catch (error) {
         console.error(
           `Error during AndersenA2 operation ${timespan.groupId}, ${timespan.startTime}, ${timespan.endTime}:`,
-          error,
+          error
         );
         break;
       }
     }
   }
 
-  return new Response(
-    JSON.stringify({ success: true }),
-    { headers: { "Content-Type": "application/json" } },
-  );
+  return new Response(JSON.stringify({ success: true }), {
+    headers: { 'Content-Type': 'application/json' }
+  });
 });
 
 /* To invoke locally:

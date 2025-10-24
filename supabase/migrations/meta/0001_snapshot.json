@@ -38,10 +38,7 @@
       "compositePrimaryKeys": {
         "andersen_charge_timespan_table_id_start_time_pk": {
           "name": "andersen_charge_timespan_table_id_start_time_pk",
-          "columns": [
-            "id",
-            "start_time"
-          ]
+          "columns": ["id", "start_time"]
         }
       },
       "uniqueConstraints": {},
@@ -90,12 +87,8 @@
           "name": "andersen_config_group_id_group_id_fk",
           "tableFrom": "andersen_config",
           "tableTo": "group",
-          "columnsFrom": [
-            "group_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["group_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -178,10 +171,7 @@
       "compositePrimaryKeys": {
         "prices_tariff_start_pk": {
           "name": "prices_tariff_start_pk",
-          "columns": [
-            "tariff",
-            "start"
-          ]
+          "columns": ["tariff", "start"]
         }
       },
       "uniqueConstraints": {},
@@ -224,12 +214,8 @@
           "name": "profile_groupId_group_id_fk",
           "tableFrom": "profile",
           "tableTo": "group",
-          "columnsFrom": [
-            "groupId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["groupId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
