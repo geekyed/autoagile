@@ -1,8 +1,4 @@
-import {
-  type ColumnBaseConfig,
-  type ColumnDataType,
-  relations,
-} from "drizzle-orm";
+import { type ColumnBaseConfig, type ColumnDataType, relations } from 'drizzle-orm';
 import {
   doublePrecision,
   index,
@@ -12,97 +8,98 @@ import {
   text,
   timestamp,
   unique,
-  uuid,
-} from "drizzle-orm/pg-core";
+  uuid
+} from 'drizzle-orm/pg-core';
 
-export const groupTable = pgTable("group", {
-  id: uuid("id").primaryKey().defaultRandom().notNull(),
-  name: text("name").notNull(),
-  ownerId: uuid("owner_id").notNull().unique(),
-  octopusTariff: text("octopus_tariff"),
+export const groupTable = pgTable('group', {
+  id: uuid('id').primaryKey().defaultRandom().notNull(),
+  name: text('name').notNull(),
+  ownerId: uuid('owner_id').notNull().unique(),
+  octopusTariff: text('octopus_tariff')
 });
 
-export const profileTable = pgTable("profile", {
-  id: uuid("id").primaryKey().notNull(),
-  name: text("name").notNull(),
-  email: text("email").notNull(),
+export const profileTable = pgTable('profile', {
+  id: uuid('id').primaryKey().notNull(),
+  name: text('name').notNull(),
+  email: text('email').notNull()
 });
 
-export const userGroups = pgTable("user_groups", {
-  userId: uuid("user_id").notNull().references((): PgColumn<
-    ColumnBaseConfig<ColumnDataType, string>
-  > => profileTable.id).primaryKey(),
-  groupId: uuid("group_id").notNull().references((): PgColumn<
-    ColumnBaseConfig<ColumnDataType, string>
-  > => groupTable.id),
+export const userGroups = pgTable('user_groups', {
+  userId: uuid('user_id')
+    .notNull()
+    .references((): PgColumn<ColumnBaseConfig<ColumnDataType, string>> => profileTable.id)
+    .primaryKey(),
+  groupId: uuid('group_id')
+    .notNull()
+    .references((): PgColumn<ColumnBaseConfig<ColumnDataType, string>> => groupTable.id)
 });
 
 export const profileRelations = relations(profileTable, ({ one }) => ({
   userGroup: one(userGroups, {
     fields: [profileTable.id],
-    references: [userGroups.userId],
-  }),
+    references: [userGroups.userId]
+  })
 }));
 
 export const groupRelations = relations(groupTable, ({ many }) => ({
-  userGroups: many(userGroups),
+  userGroups: many(userGroups)
 }));
 
 export const userGroupsRelations = relations(userGroups, ({ one }) => ({
   user: one(profileTable, {
     fields: [userGroups.userId],
-    references: [profileTable.id],
+    references: [profileTable.id]
   }),
   group: one(groupTable, {
     fields: [userGroups.groupId],
-    references: [groupTable.id],
-  }),
+    references: [groupTable.id]
+  })
 }));
 
-export const andersenConfigTable = pgTable("andersen_config", {
-  groupId: uuid("group_id").references((): PgColumn<
-    ColumnBaseConfig<ColumnDataType, string>
-  > => groupTable.id).primaryKey(),
-  andersenUsername: text("andersen_username").notNull(),
-  andersenPassword: text("andersen_password").notNull(),
-  batterySize: doublePrecision("battery_size").notNull(),
-  chargeRate: doublePrecision("charge_rate").notNull(),
+export const andersenConfigTable = pgTable('andersen_config', {
+  groupId: uuid('group_id')
+    .references((): PgColumn<ColumnBaseConfig<ColumnDataType, string>> => groupTable.id)
+    .primaryKey(),
+  andersenUsername: text('andersen_username').notNull(),
+  andersenPassword: text('andersen_password').notNull(),
+  batterySize: doublePrecision('battery_size').notNull(),
+  chargeRate: doublePrecision('charge_rate').notNull()
 });
 
-export const pricesTable = pgTable("prices", {
-  tariff: text("tariff").notNull(),
-  price: doublePrecision("price").notNull(),
-  start: timestamp("start", { precision: 6, withTimezone: true }).notNull(),
-  end: timestamp("end", { precision: 6, withTimezone: true }).notNull(),
-}, (table) => [
-  primaryKey({ columns: [table.tariff, table.start] }),
-]);
-
-export const andersenChargeTimespanTable = pgTable(
-  "andersen_charge_timespan_table",
+export const pricesTable = pgTable(
+  'prices',
   {
-    id: uuid("id").defaultRandom().primaryKey(),
-    groupId: uuid("group_id").notNull(),
-    startTime: timestamp("start_time", { precision: 6, withTimezone: true })
-      .notNull(),
-    endTime: timestamp("end_time", { precision: 6, withTimezone: true })
-      .notNull(),
-    averagePrice: doublePrecision("average_price").notNull(),
+    tariff: text('tariff').notNull(),
+    price: doublePrecision('price').notNull(),
+    start: timestamp('start', { precision: 6, withTimezone: true }).notNull(),
+    end: timestamp('end', { precision: 6, withTimezone: true }).notNull()
   },
-  (table) => [
-    index("group id index").on(table.groupId),
-    unique("unique group start").on(table.groupId, table.startTime),
-    unique("unique group end").on(table.groupId, table.endTime),
-  ],
+  (table) => [primaryKey({ columns: [table.tariff, table.start] })]
 );
 
-export const inviteTable = pgTable("invite", {
-  email: text("email").primaryKey().notNull(),
-  id: uuid("token").defaultRandom(),
-  groupId: uuid("group_id").notNull().references(() => groupTable.id),
-  createdAt: timestamp("created_at", { precision: 6, withTimezone: true })
-    .defaultNow()
-    .notNull(),
+export const andersenChargeTimespanTable = pgTable(
+  'andersen_charge_timespan_table',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    groupId: uuid('group_id').notNull(),
+    startTime: timestamp('start_time', { precision: 6, withTimezone: true }).notNull(),
+    endTime: timestamp('end_time', { precision: 6, withTimezone: true }).notNull(),
+    averagePrice: doublePrecision('average_price').notNull()
+  },
+  (table) => [
+    index('group id index').on(table.groupId),
+    unique('unique group start').on(table.groupId, table.startTime),
+    unique('unique group end').on(table.groupId, table.endTime)
+  ]
+);
+
+export const inviteTable = pgTable('invite', {
+  email: text('email').primaryKey().notNull(),
+  id: uuid('token').defaultRandom(),
+  groupId: uuid('group_id')
+    .notNull()
+    .references(() => groupTable.id),
+  createdAt: timestamp('created_at', { precision: 6, withTimezone: true }).defaultNow().notNull()
 });
 
 // export const tapoConfigTable = pgTable("tapo_config_table", {

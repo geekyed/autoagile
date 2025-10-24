@@ -63,18 +63,12 @@
         "unique group start": {
           "name": "unique group start",
           "nullsNotDistinct": false,
-          "columns": [
-            "group_id",
-            "start_time"
-          ]
+          "columns": ["group_id", "start_time"]
         },
         "unique group end": {
           "name": "unique group end",
           "nullsNotDistinct": false,
-          "columns": [
-            "group_id",
-            "end_time"
-          ]
+          "columns": ["group_id", "end_time"]
         }
       },
       "policies": {},
@@ -122,12 +116,8 @@
           "name": "andersen_config_group_id_group_id_fk",
           "tableFrom": "andersen_config",
           "tableTo": "group",
-          "columnsFrom": [
-            "group_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["group_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -175,9 +165,7 @@
         "group_owner_id_unique": {
           "name": "group_owner_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "owner_id"
-          ]
+          "columns": ["owner_id"]
         }
       },
       "policies": {},
@@ -218,10 +206,7 @@
       "compositePrimaryKeys": {
         "prices_tariff_start_pk": {
           "name": "prices_tariff_start_pk",
-          "columns": [
-            "tariff",
-            "start"
-          ]
+          "columns": ["tariff", "start"]
         }
       },
       "uniqueConstraints": {},
@@ -283,12 +268,8 @@
           "name": "user_groups_user_id_profile_id_fk",
           "tableFrom": "user_groups",
           "tableTo": "profile",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -296,12 +277,8 @@
           "name": "user_groups_group_id_group_id_fk",
           "tableFrom": "user_groups",
           "tableTo": "group",
-          "columnsFrom": [
-            "group_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["group_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }

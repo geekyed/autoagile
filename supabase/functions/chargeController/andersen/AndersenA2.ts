@@ -1,10 +1,10 @@
-import { graphqlProd, signIn } from "./auth.ts";
+import { graphqlProd, signIn } from './auth.ts';
 import {
   getCurrentUserDevices,
   getDeviceStatusSimple,
   runAEVCommand,
-  sendGraphQLQuery,
-} from "./graphQl.ts";
+  sendGraphQLQuery
+} from './graphQl.ts';
 
 interface SimpleStatus {
   id: string;
@@ -29,50 +29,43 @@ export default class AndersenA2 {
   public init = async (): Promise<void> => {
     this.token = await signIn({
       Username: this.username,
-      Password: this.password,
+      Password: this.password
     });
 
-    const devicesResponse = await sendGraphQLQuery(
-      graphqlProd,
-      this.token,
-      getCurrentUserDevices,
-    );
+    const devicesResponse = await sendGraphQLQuery(graphqlProd, this.token, getCurrentUserDevices);
     this.deviceId = devicesResponse.getCurrentUserDevices[0].id;
   };
 
   public lock = async (): Promise<void> => {
     if (!this.token || !this.deviceId) {
-      Promise.reject(new Error("Failed to initialise"));
+      Promise.reject(new Error('Failed to initialise'));
     }
 
     await sendGraphQLQuery(graphqlProd, this.token!, runAEVCommand, {
       deviceId: this.deviceId,
-      functionName: "userLock",
+      functionName: 'userLock'
     });
   };
 
   public unlock = async (): Promise<void> => {
     if (!this.token || !this.deviceId) {
-      Promise.reject(new Error("Failed to initialise"));
+      Promise.reject(new Error('Failed to initialise'));
     }
 
     await sendGraphQLQuery(graphqlProd, this.token!, runAEVCommand, {
       deviceId: this.deviceId,
-      functionName: "userUnlock",
+      functionName: 'userUnlock'
     });
   };
 
   public getSimpleStatus = async (): Promise<SimpleStatus> => {
     if (!this.token || !this.deviceId) {
-      Promise.reject(new Error("Failed to initialise"));
+      Promise.reject(new Error('Failed to initialise'));
     }
 
-    const response = await sendGraphQLQuery(
-      graphqlProd,
-      this.token!,
-      getDeviceStatusSimple,
-      { id: this.deviceId },
-    );
+    const response = await sendGraphQLQuery(graphqlProd, this.token!, getDeviceStatusSimple, {
+      id: this.deviceId
+    });
     return response.getDevice.deviceStatus as SimpleStatus;
   };
 }

@@ -1,21 +1,19 @@
-import * as carChargeTimespansDb from "$lib/data/andersenChargeTimespan";
-import * as carConfigDb from "$lib/data/andersenConfig";
-import * as pricesDb from "$lib/data/prices";
+import * as carChargeTimespansDb from '$lib/data/andersenChargeTimespan';
+import * as carConfigDb from '$lib/data/andersenConfig';
+import * as pricesDb from '$lib/data/prices';
 
 export const createNewChargeTimespans = async (
   group: Group,
   toTime: Date,
-  percentCharge: number,
+  percentCharge: number
 ) => {
   const config = await carConfigDb.get(group.id);
   if (!config) {
-    throw Error(
-      `Failed to get car charging configuration for group; ${group.id}`,
-    );
+    throw Error(`Failed to get car charging configuration for group; ${group.id}`);
   }
   if (!group.octopusTariff) {
     throw Error(
-      `Group ${group.id} does not have an octopus tariff set, cannot create charge timespans`,
+      `Group ${group.id} does not have an octopus tariff set, cannot create charge timespans`
     );
   }
 
@@ -27,7 +25,7 @@ export const createNewChargeTimespans = async (
     config,
     toTime,
     percentCharge,
-    prices,
+    prices
   );
   if (error) {
     throw Error(error);
@@ -45,35 +43,29 @@ const generateCarChargeTimespans = (
   chargeConfig: AndersenConfig,
   endDateTime: Date,
   percentCharge: number,
-  prices: Price[],
+  prices: Price[]
 ): {
   error: string | undefined;
   chargeTimespans: PreDBAndersenChargeTimespan[] | undefined;
 } => {
   const chargeTimespans: PreDBAndersenChargeTimespan[] = [];
-  const slots = calculateNoSlots(
-    chargeConfig.batterySize,
-    chargeConfig.chargeRate,
-    percentCharge,
-  );
+  const slots = calculateNoSlots(chargeConfig.batterySize, chargeConfig.chargeRate, percentCharge);
 
   if (slots === 0) return { error: undefined, chargeTimespans: [] };
 
-  const availablePrices = filterPrices(prices, endDateTime).sort((a, b) =>
-    a.price - b.price
-  );
+  const availablePrices = filterPrices(prices, endDateTime).sort((a, b) => a.price - b.price);
 
   if (slots > availablePrices.length) {
     return {
-      error: "Not enough slots available",
-      chargeTimespans: [{
-        groupId: chargeConfig.groupId,
-        startTime: prices.sort((a, b) =>
-          a.start.getTime() - b.start.getTime()
-        )[0].start,
-        endTime: endDateTime,
-        averagePrice: 0,
-      }],
+      error: 'Not enough slots available',
+      chargeTimespans: [
+        {
+          groupId: chargeConfig.groupId,
+          startTime: prices.sort((a, b) => a.start.getTime() - b.start.getTime())[0].start,
+          endTime: endDateTime,
+          averagePrice: 0
+        }
+      ]
     };
   }
   const selectedPrices = availablePrices
@@ -91,12 +83,11 @@ const generateCarChargeTimespans = (
         groupId: chargeConfig.groupId,
         startTime: currentPrice.start,
         averagePrice: currentPrice.price,
-        endTime: currentPrice.end,
+        endTime: currentPrice.end
       };
     } else {
       currentTimespan.averagePrice =
-        (currentTimespan.averagePrice * (slotCount - 1) + currentPrice.price) /
-        slotCount;
+        (currentTimespan.averagePrice * (slotCount - 1) + currentPrice.price) / slotCount;
     }
 
     if (
@@ -104,8 +95,7 @@ const generateCarChargeTimespans = (
       (nextPrice && !equalWithFuzziness(nextPrice.start, currentPrice.end, 1))
     ) {
       currentTimespan.endTime = currentPrice.end;
-      currentTimespan.averagePrice =
-        Math.round(currentTimespan.averagePrice * 10) / 10;
+      currentTimespan.averagePrice = Math.round(currentTimespan.averagePrice * 10) / 10;
       chargeTimespans.push({ ...currentTimespan });
       currentTimespan = undefined;
       slotCount = 0;
@@ -114,11 +104,7 @@ const generateCarChargeTimespans = (
   return { chargeTimespans, error: undefined };
 };
 
-const calculateNoSlots = (
-  batterySize: number,
-  chargeRate: number,
-  percentCharge: number,
-) => {
+const calculateNoSlots = (batterySize: number, chargeRate: number, percentCharge: number) => {
   const kwhRequired = (batterySize / 100) * percentCharge;
   const kwhPerSlot = chargeRate / 2;
   const slots = Math.ceil(kwhRequired / kwhPerSlot);
@@ -133,13 +119,13 @@ const filterPrices = (prices: Price[], endTime: Date) =>
     .map((price) => ({
       start: price.start,
       end: price.end,
-      price: price.price,
+      price: price.price
     })); // Deep copy
 
 const equalWithFuzziness = (
   date1: Date | undefined,
   date2: Date | undefined,
-  fuzzinessInMinutes: number,
+  fuzzinessInMinutes: number
 ) => {
   if (!date1 && !date2) return true;
   if (!date1 || !date2) return false;

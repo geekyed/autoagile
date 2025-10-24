@@ -1,5 +1,5 @@
-import * as profileDb from "$lib/data/profile";
-import type { LayoutServerLoad } from "./$types";
+import * as profileDb from '$lib/data/profile';
+import type { LayoutServerLoad } from './$types';
 
 export const load: LayoutServerLoad = async ({ locals, cookies }) => {
   const { session } = await locals.safeGetSession();
@@ -8,12 +8,12 @@ export const load: LayoutServerLoad = async ({ locals, cookies }) => {
     return {
       session,
       cookies: cookies.getAll(),
-      userProfile: undefined,
+      userProfile: undefined
     };
   }
   return {
     session,
     cookies: cookies.getAll(),
-    userProfile: await profileDb.get(session.user.id),
+    userProfile: await profileDb.get(session.user.id)
   };
 };

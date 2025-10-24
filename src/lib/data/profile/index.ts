@@ -1,6 +1,6 @@
-import { eq } from "drizzle-orm";
-import { db } from "../../db";
-import { profileTable } from "../../db/schema";
+import { eq } from 'drizzle-orm';
+import { db } from '../../db';
+import { profileTable } from '../../db/schema';
 
 export const get = async (userId: string): Promise<UserProfile | undefined> => {
   const profileWithGroup = await db.query.profileTable.findFirst({
@@ -8,10 +8,10 @@ export const get = async (userId: string): Promise<UserProfile | undefined> => {
     with: {
       userGroup: {
         with: {
-          group: true,
-        },
-      },
-    },
+          group: true
+        }
+      }
+    }
   });
   if (!profileWithGroup) {
     return undefined;
@@ -21,7 +21,7 @@ export const get = async (userId: string): Promise<UserProfile | undefined> => {
     id: profileWithGroup.id,
     name: profileWithGroup.name,
     email: profileWithGroup.email,
-    group: { ...profileWithGroup.userGroup.group },
+    group: { ...profileWithGroup.userGroup.group }
   };
 };
 
@@ -32,11 +32,14 @@ interface ProfileToSave {
 }
 
 export const upsert = async (profile: ProfileToSave) => {
-  await db.insert(profileTable).values(profile).onConflictDoUpdate({
-    target: [profileTable.id],
-    set: {
-      name: profile.name,
-      email: profile.email,
-    },
-  });
+  await db
+    .insert(profileTable)
+    .values(profile)
+    .onConflictDoUpdate({
+      target: [profileTable.id],
+      set: {
+        name: profile.name,
+        email: profile.email
+      }
+    });
 };
