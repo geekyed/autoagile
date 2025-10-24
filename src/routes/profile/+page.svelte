@@ -102,12 +102,10 @@
             <Button type='submit'>{userProfile?.group ? 'Update Group' : 'Create Group'}</Button>
           </div>
         </form>
-
         <form class='flex flex-col gap-2' method="post" action="?/sendInvite" use:enhance={({formData}) => {
           formData.set('email', inviteEmail);
           return ({result}) => {
             if (result.type === 'success') {
-              
               alert('Invite sent!');
             } else {
               alert('Failed to send invite');

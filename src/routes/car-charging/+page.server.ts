@@ -2,7 +2,8 @@ import { error } from "@sveltejs/kit";
 import { zfd } from "zod-form-data";
 
 import * as carConfigDb from "$lib/data/andersenConfig";
-import * as profileDb from "$lib/data/profile";
+import * as profileDb from "$lib/data/profile"
+import * as groupDb from "$lib/data/group"
 
 export const load = async ({ locals }) => {
   console.info("load running");
@@ -14,14 +15,12 @@ export const load = async ({ locals }) => {
     error(401, "Unauthorized");
   }
 
-  const profile = await profileDb.get(user.id);
-  if (!profile) {
-    console.error("Profile not found");
-    error(400, "profile not configured");
-  }
+  const profile = await profileDb.get(user.id)
+  if (profile == undefined) return { isReadOnly: true, carChargingConfig: undefined }
 
   return {
-    carChargingConfig: await carConfigDb.get(profile.group.id),
+    isReadOnly: profile.group.ownerId !== profile.id,
+    carChargingConfig: await carConfigDb.get(profile.group.id)
   };
 };
 
@@ -33,9 +32,11 @@ export const actions = {
     }
     console.info("Car charging config form submission received");
 
-    const profile = await profileDb.get(user.id);
-    if (!profile) {
-      error(400, "profile not configured");
+    const group = await groupDb.getByOwner(user.id)
+
+    if (!group) {
+      console.warn("Only group owners can modify charge settings.")
+      error(401, "Unauthorized - Only group owners can modify charge settings.")
     }
 
     const schema = zfd.formData({
@@ -55,7 +56,7 @@ export const actions = {
 
     await carConfigDb.upsert({
       ...data,
-      groupId: profile.group.id,
+      groupId: group.id,
     });
 
     console.info("Updated car charging config in database", user?.id, data);

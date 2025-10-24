@@ -7,7 +7,8 @@
 	import { invalidate } from '$app/navigation';
 
   const { data } = $props()
-  const { carChargingConfig } = $derived(data);
+  const { carChargingConfig, isReadOnly } = $derived(data);
+
 
   let andersenUsername = $state('');
   let andersenPassword = $state('');
@@ -22,45 +23,49 @@
       chargeRate = carChargingConfig.chargeRate || 0;
     }
   });
-
 </script>
 <div class='flex flex-col items-center gap-5'>
   <Card class='w-full max-w-xl'>
     <CardContent>
-      <form class='flex flex-col gap-2' method="post" use:enhance={({formData}) => {
-        formData.set('andersenUsername', andersenUsername);
-        formData.set('andersenPassword', andersenPassword);
-        formData.set('batterySize', batterySize.toString());
-        formData.set('chargeRate', chargeRate.toString());
-        return ({result}) => {
-          if (result.type === 'success') {
-            alert('Group updated!');
-            invalidate("/");
-          } else {
-            console.error(result.status, result.type);
-          }
-        };
-      }}>
+      {#if isReadOnly}
+        <p class='pb-5'>You're not authorised to access car charging config, please speak to the group owner.</p>
+      {/if}
+        <form class='flex flex-col gap-2' method="post" use:enhance={({formData}) => {
+          formData.set('andersenUsername', andersenUsername);
+          formData.set('andersenPassword', andersenPassword);
+          formData.set('batterySize', batterySize.toString());
+          formData.set('chargeRate', chargeRate.toString());
+          return ({result}) => {
+            if (result.type === 'success') {
+              alert('Group updated!');
+              invalidate("/");
+            } else {
+              console.error(result.status, result.type);
+            }
+          };
+        }}>
           <div>
             <Label>Andersen Username</Label>
-            <Input bind:value={andersenUsername} />
+            <Input disabled={isReadOnly} bind:value={andersenUsername} />
           </div>
           <div>
             <Label>Andersen Password</Label>
-            <Input type="text" style="-webkit-text-security: disc;" bind:value={andersenPassword} />
+            <Input disabled={isReadOnly} type="text" style="-webkit-text-security: disc;" bind:value={andersenPassword} />
           </div>
           <div>
             <Label>Charge Rate kW</Label>
-            <Input bind:value={chargeRate} />
+            <Input disabled={isReadOnly} bind:value={chargeRate} />
           </div>
           <div>
             <Label>Battery Size kWh</Label>
-            <Input bind:value={batterySize} />
+            <Input disabled={isReadOnly} bind:value={batterySize} />
           </div>
-          <div>
-            <Button type='submit'>{carChargingConfig ? 'Update' : 'Create Config'}</Button>
-          </div>
-      </form>
+          {#if !isReadOnly}
+            <div>
+              <Button type='submit'>{carChargingConfig ? 'Update' : 'Create Config'}</Button>
+            </div>
+          {/if}
+        </form>
     </CardContent>
   </Card>
 </div>
