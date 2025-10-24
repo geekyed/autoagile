@@ -2,7 +2,7 @@ import { error } from "@sveltejs/kit";
 import { zfd } from "zod-form-data";
 
 import * as carConfigDb from "$lib/data/andersenConfig";
-import * as profileDb from "$lib/data/profile"
+import * as profileDb from "$lib/data/profile";
 import * as groupDb from "$lib/data/group"
 
 export const load = async ({ locals }) => {
