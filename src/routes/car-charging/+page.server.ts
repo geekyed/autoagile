@@ -20,7 +20,7 @@ export const load = async ({ locals }) => {
 
   return {
     isReadOnly: profile.group.ownerId !== profile.id,
-    carChargingConfig: await carConfigDb.get(profile.group.id)
+    carChargingConfig: await carConfigDb.get(profile.group.id),
   };
 };
 
